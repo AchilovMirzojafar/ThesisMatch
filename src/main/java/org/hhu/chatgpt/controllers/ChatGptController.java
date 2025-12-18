@@ -69,5 +69,8 @@ public class ChatGptController {
         return "betreuer";
     }
 
+    @GetMapping("/betreunde")
+    public String betreuende() { return "betreuende"; }
+
 
 }
