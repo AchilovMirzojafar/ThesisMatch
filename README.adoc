@@ -1,0 +1,176 @@
+= Thesis is coming!
+
+Anforderungen finden Sie in der https://propra.d.stups.hhu.de/ws25/627b529bc074bf7/index.html[Projektbeschreibung] 
+Lesen Sie auf jeden Fall die Hinweise im https://propra.d.stups.hhu.de/ws25/81409548708bb5d/index.html[Organisationsdokument].
+
+Fristen für die Selbstbewertung in Ilias:
+
+* erste Klausur: 16.02.2026
+* zweite Klausur: 17.03.2026
+
+Jedes Teammitglied muss die Selbstbewertung einzeln ausfüllen.
+Wenn Sie den Fragebogen zum ersten Termin ausgefüllt haben, die erste Klausur aber nicht mitgeschrieben haben, müssen Sie den Fragebogen für den zweiten Versuch neu ausfüllen.
+
+Dokumentieren Sie die Verwendung von KI-Werkzeugen in der Datei ki.txt
+
+Wir behalten uns vor, die Implementierung und Ihre Beantwortung des Fragebogens stichpunktartig zu prüfen.
+
+[#_ziel_der_webseite]
+= Ziel der Webseite:
+* passende Betreuung & passendes Thema für die Abschlussarbeit finden
+
+** primäres Ziel: Betreuer finden - über Suche, ein Matching oder Browsing von Betreuer-Profilen
+
+= Funktionalität
+
+== Personen-Profile
+* Jeder Betreuer hat eine eigene Profilseite
+* Informationen auf der Seite: Name, Kontaktinformationen, Fachgebiet der Person als Tag (z.B funktionale Programmierung, Spring, Formale Methoden, etc.)
+* Möglichkeit Dateien hochzuladen (z.BV Betreuungsleitfaden oder Expose-Vorlage)
+* Links: muss aus URl und anzuzeigendem Text bestehen
+* Liste von möglichen Themen (Titel, Möglichkeit: genauere beschreibung anzugeben in Markdown aber in HTML angezeigt)
+  ** Beschreibung darf leer sein, Titel aber nicht
+  ** ein Thema kann Anforderungen besitzen (besuchte Veranstaltungen)
+  ** Thema kann optional (Dateien, Links, mehrere Fachgebiete zugeordnet werden) -> wie im profil
+
+== Informationsdateien
+* Jede hochgeladene Datei muss Meta-Informationen enthalten:
+  ** von wem wurde die Datei hochgeladen?
+  ** Wann wurde die Datei hochgeladen?
+
+  -> automatisch vom System generiert
+
+  ** Ein Titel, der als Link zur Datei dient
+  ** Ein (optionaler) beschreibender Text
+
+  -> beim hochladen festgelegt
+
+  * (Dateitypen: Zip, PDf, Markdown)
+  * Dateityp muss überprüft werden: .pdf ?
+  * PDF und Zip-Dateien werden als downloadbarer link gerendert
+  * Markdown-Dateien, beim anklicken als HTML anzeigen
+  * Markdown-Dateien dürfen HTML enhalten aber Nutzung des <script>-Tag verhindern
+  * Dateien werden im Dateiensystem abgelegt
+  * Dateiname wird vom System festgelegt, so dass keine Konflikte entstehen
+  * maximale Größe: 10mb
+
+== Browsen und Filtern
+  * Studenten können alle Betreuer & alle themen anssehen
+  * betreuer und Thema sollen nach Interesse gefiltert werden können
+
+== Matching
+  * Matching sucht Betreuer & Thema, welche zu den Voraussetzungen des Studenten passen
+  * Studenten geben an: Welche Module bestanden wurden und das Interesse
+    ** mögliche Matches werden ausgegeben & nach Übereinstimmung sortiert
+
+== technische Umsetzung
+  * Java mit Spring-framework
+  * genau Datenbaktechnologie wird noch frei gegeben (letztes jahr PostgresSQL)
+    ** nicht mit Persistenz (Speicherung der Daten beginnen)!
+
+== Userverwaltung
+  * Authentifizierung über GitHub
+  * Drei rollen: *Studierende*, *Betreuende*, *Admin* (Rolle Admin wird nicht aus Datenbank, sondern Konfigurationsdatei geladen (beim Start der Anwendung)
+    ** Änderungen an den Admin-Rollen sollen keine neukompilation von Java-Dateien erfordern
+    ** neustart mit neuer Konfigurationsdatei okay
+
+
+= Bewertung des projekt
+
+== Geschäftslogik 
+  * Fachdomäne sinnvoll in Code überführen
+    ** passende zerlegung in Aggregate
+    ** sinnvoler interne Aufbau von Aggregaten
+    ** nicht zu große und nicht zu kleine Aggregate -> werden Aggregate immer zusammen verwendet = zu einem Aggregat machen
+  * Welche Objekte werden Entitäten und welche werden Werte
+    ** sinnvole Datenstrukturen verwenden (20-String parameter eines formulars zu einer Datenstrukturk "Formular" zusammenführen)
+    ** Fachobjekte statt primitiven Datentypen (z.B Postleitzahl-Objekt statt integer)
+    ** richtige Verwendung von Arrays, Listen, Sets, Maps, Stacks, Queues, ggf. eigene Datentypen mit eigenen Methoden erstellen
+
+== Überprüfungen
+* Controller-Methoden sind nicht überladen mit Parametern, die aus einem Formular stammen. 
+* Bei mehr als zwei oder drei Parametern sollte ein Parameter-Objekt in Betracht gezogen werden. 
+* Controller haben keine Logik, die in die Geschäftslogik gehört.
+* Die Aggregate haben eine sinnvolle Größe.
+* Wo es sinnvoll geht, werden fachliche Objekte verwendet
+
+== Accessibility (Barrierefrei)
+* Grafiken haben immer ein alt-Attribut. 
+* Wenn die Grafik aus rein optische Gründen existiert, muss das alt-Attribut vorhanden, aber leer sein.
+* HTML wird gemäß der Semantik der einzelnen Tags (table, ol, ul, etc.) verwendet. Dazu gehört auch die korrekte Verwendung von Headern.
+* Die Anwendung kann ohne Maus verwendet werden.
+
+== Architektur & Struktur
+* Onion-Architektur
+  ** Sicherstellen mit ArchUnit und/oder Gradle-Submodule (testen)
+* Alle Klassen sind in die richtigen Schichten eingeordnet
+  ** Inneren Schichten der Geschäftslogik (also Domain Model, Domain-Services und Application-Service-Schicht) nicht von Adaptern (oder Spring Data) abhängig.
+
+== Authentifizierung & Autorisierung
+* Für Authentifizierung wird GitHub OAuth verwendet
+* Drei zugriffsebenen: Organisatoren, Korrektoren, Studierende
+  **Es darf auf keinen Fall möglich sein, ohne passende Berechtigung auf Ressourcen zuzugreifen.
+  **Sicherstellen, dass das bei künftigen Änderungen im System nicht versehentlich der Zugriff für unberechtigte Personen eingeführt wird. (Mit ArchUnit & Systemstruktur)
+  **Keine Passwörter bzw. Secrets sind jemals in der Git-Historie eingecheckt gewesen. (Wenn doch dann Git-Historie reparieren)
+  ** Parameter, die in die Anwendung kommen, müssen auf ihre Gültigkeit überprüft werden. Es darf nicht möglich sein JavaScript in die Anwendung einzuschleusen.
+
+== Betrieb
+* Anwendung für Deployment auf Server vorbereiten
+* Die Anwendung muss ein Docker-Compose-File enthalten und mit ./gradlew bootJar fehlerfrei gebaut werden.
+* Mit docker compose up kann die Anwendung aus dem Terminal heraus gestartet werden.
+
+== Code
+  * Code einheitlich formatieren -> Styleguide als Standard in IDE einzustellen & CheckStyle einbauen
+  * Der Code muss einem festen Formatierungs-Styleguide (Google, Oracle oder einem eigenen, einheitlichen Guide) genügen.
+  * Die üblichen Java-Konventionen (z. B. Schreibweisen von Konstanten, Variablen, Methoden, Typen, …​) werden auf jeden Fall eingehalten.
+  * Zu jeder Meldung, die SpotBugs produziert (wenn die Annotationen zur Unterdrückung ausgeschaltet sind), müssen Sie erklären können, warum die Meldung in Ihrem Fall keine      Rolle spielt.
+
+== Dokumentation
+  * arc42-template
+  * Die Dokumentationen sind hinreichend vollständig, aber auch kurz und verständlich. Dazu gehört, dass Sie zumindest einmal eine Rechtschreibprüfung laufen lassen.
+  * Die Dokumentation enthält eine Kontextabgrenzung inklusive eines Kontextabgrenzungsdiagramms.
+  * Sie enthält eine Level-1-Bausteinsicht und es gibt eine textuelle Erläuterung der einzelnen Bausteine.
+
+== Funktionalität (Beispielszenario)
+  * Eine Person mit der Rolle Admin legt die Betreuerin Karla Turing an
+  * Karla Turing lädt Ihren Betreuungsleitfaden als Markdown Datei hoch und ergänzt ihr Profil mit den Tags Compilerbau und Formale Methoden.
+  * Der Student Peter von Neumann sucht nach Themen zum Compilerbau und findet zwar keine konkreten Themen, aber zumindest die Betreuerin Karla Turing
+  * Peter von Neumann kann im Profil von Karla Turing den Betreuungsleitfaden anschauen. Der Leitfaden wird als HTML angezeigt und muss nicht heruntergeladen werden.
+
+== Git
+  * Jeder Commit muss eine Einheit darstellen
+  * Jeder Commit: hilfreiche Beschreibung + Message -> setzt genau einen Arbeitsschritt um
+  * mit .gitignor-Datei starten
+  * Commit für Fehler-Reperatur: Enthält Test der den Fehler demonstriert + Code der den Fehler repariert
+  * Commit für ein Feature: Enthält Tests für das Feature + Code 
+    ** gute Commit-Message schreiben
+  * Kein Commit darf die Datenbank-Daten enthalten. Diese Daten müssen komplett entfernt sein. Sie können dazu Werkzeuge wie BFG verwenden.
+
+== Korrektheit
+  * Was passiert wenn mehrere Benutzer gleichzeitig auf Inhalte zugreifen?
+  * Wichtig sind schreibende-Zugriffe
+  * Auf konkurrierende Zugriffe achten
+  * Zustand auf Server-Seite halten vermeiden
+    	** Es darf keine Race-Conditions oder Lost Updates geben, auch wenn zum Beispiel ein:e Betreuer:in in mehr als einem Browser-Tab Änderungen durchführt. Auch wenn die             Wahrscheinlichkeit für eine Kollision nur sehr gering ist, ist das ein Problem!
+      ** Probleme müssen angezeigt werden, es darf keine Änderung stillschweigend verlorengehen.
+      ** Die Aggregate sind korrekt umgesetzt. Zugriffe auf Inhalte von Aggregaten sind nur über die Root-Entity möglich. Alles, was aus dem Aggregat herausgegeben wird, darf          die Konsistenz des Aggregates niemals kompromittieren.
+
+== Testing
+  * Code sinnvoll testen
+  * Mischung aus Integration- & Unit-Tests
+  * Tests testen jeweils einen Aspekt
+  * Alle Tests müssen eine Asserstion enthalten, die fehlschlagen kann -> Tests müssen wirklich was testen
+  * Lesbare Tests -> für Leser die herausfinden wollen, wie mit den einzelenen Komponeneten der Software interargiert werden sol
+    ** Verhalten testen -> keine Implementierungsdetails
+    ** Kopplung zwischen Tests und Code gering halten
+    ** Testabdeckungsanalyse mit PITEst kann helfen Lücken in Tests zu entdecken (nicht 1000% chasen, macht keinen Sinn)
+      ** code der durch die IDE erzeugt wurde, z.B equals oder hashcode Methoden für eine Entität, macht kein Sinn zu testen
+
+  * Die Anwendung hat eine vernünftige Testabdeckung, Werte zwischen 80 und 90 % sind gute Anzeichen. Die Tests haben immer eine sinnvolle Assertion.
+
+  * Die Tests haben einen möglichst kleinen Kontext. Tests, die ohne Mocks geschrieben werden können, verwenden keine Mocks. Tests, die als Unit-Tests geschrieben werden   können, benutzen keine Spring-Dependencies und Tests, die mit einem Spring Testslice (z.B. @MockMvcTest) auskommen können, benutzen nicht den kompletten Anwendungskontext über @SpringBootTest.
+
+  * Es ist für jeden Test unmittelbar offensichtlich, was dort getestet wird. Die Tests sind nach AAA strukturiert, möglichst klein gehalten und haben keine komplexe (nicht-lineare) Logik. Jeder Test ist so benannt (oder mit einer @DisplayName Annotation versehen), dass es ohne Lesen des Codes klar ist, was geprüft wird. Die Namen dürfen auf keinen Fall falsch sein!
+
+  * Die Tests sind möglichst gut vom Code entkoppelt über Builder, Object-Mothers und/oder Factories. Lackmus-Test: Ein Hinzufügen oder Entfernen eines Konstruktor-Parameters bewirkt nicht, dass allzu viele Stellen geändert werden müssen.
+      
