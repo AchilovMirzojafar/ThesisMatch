@@ -9,25 +9,15 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     @Bean
-    public SecurityFilterChain configure(HttpSecurity chainBuilder) throws Exception{
-         chainBuilder.authorizeHttpRequests(
-                configurer -> configurer.requestMatchers("/css/*").permitAll()
-                .anyRequest().authenticated())
-                 .oauth2Login(oauth -> oauth.defaultSuccessUrl("/home",true));
+    public SecurityFilterChain configure(HttpSecurity chainBuilder,RoleBasedSuccessHandler successHandler) throws Exception{
+         chainBuilder.authorizeHttpRequests( configurer -> configurer.requestMatchers("/","/home","/css/*").permitAll()
+                         .requestMatchers("/admin/**").hasRole("ADMIN")
+                         .requestMatchers("/betreuer/**").hasRole("BETREUER")
+                    .anyRequest().authenticated())
+                 .oauth2Login(config -> config.userInfoEndpoint(
+                         info -> info.userService(new AppUserService())).successHandler(successHandler));
+                 //.oauth2Login(oauth -> oauth.defaultSuccessUrl("/home",true)); // nach der Author. wirft in /home Seite
 
-                   return chainBuilder.build();
+         return chainBuilder.build();
     }
 }
-
-
-
-//Client_ID=Ov23li5zAT5LWEr3n6wT
-//Client_secret=c2aa036027f89d2127b16c610a86717df1ec8e47
-
-//            config.userInfoEndpoint(
-//                info -> info.userService(new AppUserService())
-//            ));
-//    return chainBuilder.build();
-//  }
-//
-//}
