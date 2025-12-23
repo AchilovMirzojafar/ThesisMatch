@@ -11,11 +11,13 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain configure(HttpSecurity chainBuilder,RoleBasedSuccessHandler successHandler) throws Exception{
          chainBuilder.authorizeHttpRequests( configurer -> configurer.requestMatchers("/","/home","/css/*").permitAll()
-                         .requestMatchers("/admin/**").hasRole("ADMIN")
-                         .requestMatchers("/betreuer/**").hasRole("BETREUER")
+//                         .requestMatchers("/admin/**").hasRole("ADMIN")
+//                         .requestMatchers("/betreuer/**").hasRole("BETREUER")  //Zugriffsrechte über Controller festlegen
                     .anyRequest().authenticated())
-                 .oauth2Login(config -> config.userInfoEndpoint(
-                         info -> info.userService(new AppUserService())).successHandler(successHandler));
+                 .oauth2Login(config ->
+                         config.userInfoEndpoint(
+                         info -> info.userService(new AppUserService()
+                         )).successHandler(successHandler));
                  //.oauth2Login(oauth -> oauth.defaultSuccessUrl("/home",true)); // nach der Author. wirft in /home Seite
 
          return chainBuilder.build();
