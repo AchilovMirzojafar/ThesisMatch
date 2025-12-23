@@ -2,7 +2,7 @@ package org.hhu.chatgpt.dummydata;
 
 import java.util.List;
 
-import org.hhu.chatgpt.model.Thema;
+import org.hhu.chatgpt.domain.model.Thema;
 
 public class ThemaDummyData {
 
