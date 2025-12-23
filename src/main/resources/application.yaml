@@ -8,3 +8,5 @@ spring:
             client-secret: e941c2d52cb6ce2dc0bce7b8ecc194fdbed7ae8a
             scope:
               - read:public_repo
+security:
+  admins: AchilovMirzojafar,MohamedChallou,Marwanakov
