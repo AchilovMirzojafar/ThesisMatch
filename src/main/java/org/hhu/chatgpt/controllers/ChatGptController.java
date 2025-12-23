@@ -3,9 +3,10 @@ package org.hhu.chatgpt.controllers;
 import java.util.List;
 
 import org.hhu.chatgpt.config.annotations.AdminOnly;
+import org.hhu.chatgpt.config.annotations.AdminOrBetreuerOnly;
 import org.hhu.chatgpt.config.annotations.BetreuerOnly;
-import org.hhu.chatgpt.model.Thema;
-import org.hhu.chatgpt.service.ThemaService;
+import org.hhu.chatgpt.domain.model.Thema;
+import org.hhu.chatgpt.domain.service.ThemaService;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
@@ -64,7 +65,7 @@ public class ChatGptController {
     }
 
     @GetMapping("/betreuer")
-    @BetreuerOnly
+    @AdminOrBetreuerOnly
     public String betreuer(){
         return "betreuer";
     }
@@ -73,6 +74,7 @@ public class ChatGptController {
     public String betreuende() { 
         return "betreuende";
     }
+
 
 
 }
