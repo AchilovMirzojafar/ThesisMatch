@@ -28,7 +28,7 @@ public class WebTest {
     ThemaService themaService;
 
     @MockBean
-    RoleBasedSuccessHandler successHandler;
+    RoleBasedSuccessHandler successHandler; // parameter von SecurityConfig, muss injeziert werden
 
     @Test
     @DisplayName("Startseite ist unter / erreichbar")

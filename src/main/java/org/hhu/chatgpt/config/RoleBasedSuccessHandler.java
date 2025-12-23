@@ -17,7 +17,7 @@ public class RoleBasedSuccessHandler implements AuthenticationSuccessHandler {
             throws IOException{
         String targetUrl = "/home";
 
-        if (authentication.getAuthorities().stream()
+        if (authentication.getAuthorities().stream()      // iterriert über eine Sammlung von Rollen
                 .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
             targetUrl = "/admin";
         }
@@ -30,6 +30,6 @@ public class RoleBasedSuccessHandler implements AuthenticationSuccessHandler {
 //            targetUrl = "/student";
 //        }
 
-        response.sendRedirect(targetUrl);
+        response.sendRedirect(targetUrl);   // bei einem Match wird zur angegebenen Seite weitergeleitet
     }
 }
