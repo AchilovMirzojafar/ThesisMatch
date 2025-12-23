@@ -1,10 +1,10 @@
-package org.hhu.chatgpt.service;
+package org.hhu.chatgpt.domain.service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.hhu.chatgpt.dummydata.ThemaDummyData;
-import org.hhu.chatgpt.model.Thema;
+import org.hhu.chatgpt.domain.model.Thema;
 import org.springframework.stereotype.Service;
 
 @Service

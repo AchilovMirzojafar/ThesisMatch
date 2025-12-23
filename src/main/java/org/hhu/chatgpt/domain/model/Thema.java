@@ -1,4 +1,4 @@
-package org.hhu.chatgpt.model;
+package org.hhu.chatgpt.domain.model;
 
 public class Thema {
 
