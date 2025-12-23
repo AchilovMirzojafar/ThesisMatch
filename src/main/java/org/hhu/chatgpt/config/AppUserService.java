@@ -28,6 +28,10 @@ public class AppUserService implements OAuth2UserService<OAuth2UserRequest, OAut
 
         if("AchilovMirzojafar".equals(originalUser.getAttribute("login"))){
             authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
+        } else if("MohamedChallou".equals(originalUser.getAttribute("login"))) {
+            authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
+        } else if("Marwanakov".equals(originalUser.getAttribute("login"))) {
+            authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
         } else if (("".equals(originalUser.getAttribute("login")))) {
             authorities.add(new SimpleGrantedAuthority("ROLE_BETREUER"));
         }
