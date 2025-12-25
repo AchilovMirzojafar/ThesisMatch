@@ -30,54 +30,64 @@
     </div>
 </nav>
 
-<!-- MAIN CONTENT -->
-<div class="container mt-5">
-    <div class="row align-items-center">
+<div class="container-fluid px-4 mt-4" style="max-width: 900px;">
+    <div class="d-flex justify-content-between align-items-center mb-4">
 
-        <!-- LEFT: SLOGAN -->
-        <div class="col-md-6">
-            <h1 class="display-5 fw-semibold mb-4">
+        <!-- Erster Slogan ganz links -->
+        <div class="text-start">
+            <h1 class="display-6 fw-semibold mb-0">
                 FANG DEINEN WEG ZUM<br>
                 PERFEKTEN BACHELOR AN
             </h1>
-            <p class="text-muted fs-5">
-                ThesisMatch verbindet Studierende und Betreuende effizient und transparent.
+        </div>
+
+        <!-- Zweiter Slogan ganz rechts -->
+        <div class="text-end">
+            <p class="fs-5 fw-semibold mb-1">
+                Willkommen ADMIN 👋
+            </p>
+            <p class="fs-6 mb-0">
+                Du bist eingeloggt als
+                <strong sec:authentication="principal.attributes['login']"></strong>
             </p>
         </div>
 
-        <!-- RIGHT: LOGIN CARD -->
-        <div class="col-md-5 offset-md-1">
-            <div class="card border-0 shadow-sm">
-                <div class="card-body p-4 text-center">
+    </div>
 
-                    <!-- wird nur den Gast gezeig(nich gelogt) -->
-                    <a sec:authorize="!isAuthenticated()"
-                       href="/oauth2/authorization/github"
-                       class="btn btn-dark btn-lg w-100">
-                        <i class="fa-brands fa-github me-2"></i>
-                        Login mit GitHub
-                    </a>
+    <!-- Formular darunter -->
+    <div class="card shadow-sm">
+        <div class="card-body p-3">
+            <h5 class="mb-3">Betreuer hinzufügen</h5>
 
-                    <!-- wird gelogte users gezeigt -->
-                    <div sec:authorize="isAuthenticated()">
-                        <p class="fs-3 fw-semibold mt-3">
-                            Willkommen ADMIN👋
-                        </p>
-                        <p class="fs-5">
-                            Du bist eingeloggt als
-                            <strong sec:authentication="principal.attributes['login']"></strong>
-                        </p>
-                    </div>
+            <form method="post" action="/admin" class="row g-2">
 
+                <div class="col-12 col-md-6">
+                    <label for="name" class="form-label">Vorname</label>
+                    <input type="text"
+                           id="name"
+                           name="name"
+                           placeholder="Vorname eingeben"
+                           class="form-control form-control-sm"
+                           required>
                 </div>
 
-            </div>
-        </div>
+                <div class="col-12 col-md-6">
+                    <label for="surname" class="form-label">Nachname</label>
+                    <input type="text"
+                           id="surname"
+                           name="nachname"
+                           placeholder="Nachname eingeben"
+                           class="form-control form-control-sm">
+                </div>
 
+                <div class="col-12 mt-3">
+                    <button type="submit" class="btn btn-dark btn-sm w-100">Betreuer erstellen</button>
+                </div>
+
+            </form>
+        </div>
     </div>
 </div>
 
 </body>
 </html>
-
-
