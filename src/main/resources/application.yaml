@@ -9,4 +9,4 @@ spring:
             scope:
               - read:public_repo
 security:
-  admins: AchilovMirzojafar,MohamedChallou,Marwanakov
+  admins: MohamedChallou,Marwanakov

@@ -41,6 +41,9 @@ public class AppUserService implements OAuth2UserService<OAuth2UserRequest, OAut
         if (login != null && adminLogins.contains(login)) { //Prüfung, ob Name in adminLogin enthalten ist
             authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN")); //Wenn Ja, wird die Rolle Admin zugewiesen
         }
+        else if (("AchilovMirzojafar".equals(originalUser.getAttribute("login")))) {
+            authorities.add(new SimpleGrantedAuthority("ROLE_BETREUER"));
+        }
 
 //        if("AchilovMirzojafar".equals(originalUser.getAttribute("login"))){
 //            authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
@@ -48,10 +51,8 @@ public class AppUserService implements OAuth2UserService<OAuth2UserRequest, OAut
 //            authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
 //        } else if("Marwanakov".equals(originalUser.getAttribute("login"))) {
 //            authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
-//        } else if (("".equals(originalUser.getAttribute("login")))) {
-//            authorities.add(new SimpleGrantedAuthority("ROLE_BETREUER"));
-//        }
 
-        return new DefaultOAuth2User(authorities, originalUser.getAttributes(), "login");
+
+            return new DefaultOAuth2User(authorities, originalUser.getAttributes(), "login");
+        }
     }
-}
