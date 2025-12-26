@@ -6,6 +6,7 @@ import org.hhu.chatgpt.config.annotations.AdminOnly;
 import org.hhu.chatgpt.config.annotations.AdminOrBetreuerOnly;
 import org.hhu.chatgpt.config.annotations.BetreuerOnly;
 import org.hhu.chatgpt.domain.model.Thema;
+import org.hhu.chatgpt.domain.model.betreuer.Betreuer;
 import org.hhu.chatgpt.domain.service.ThemaService;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -66,7 +67,20 @@ public class ChatGptController {
 
     @GetMapping("/betreuer")
     @AdminOrBetreuerOnly
-    public String betreuer(){
+    public String betreuer(Model model){
+        Betreuer betreuer = new Betreuer(
+                "Max",
+                "Musterman",
+                "max.mustermann@uni.de",
+                "0211 123456",
+                List.of("Spring", "Formale Methoden", "Funktionale Programmierung"),
+                List.of()
+
+        );
+
+        model.addAttribute("betreuer", betreuer);
+        model.addAttribute("allTags",
+                List.of("Compilerbau", "Formale Methoden", "Spring", "KI"));
         return "betreuer";
     }
 

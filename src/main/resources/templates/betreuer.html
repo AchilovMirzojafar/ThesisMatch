@@ -1,83 +1,201 @@
 <!DOCTYPE html>
-<html lang="en"
+<html lang="de"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
     <meta charset="UTF-8">
-    <title>ThesisMatch – Login</title>
+    <title>ThesisMatch – Betreuerprofil</title>
 
-    <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 
 <body class="bg-light">
 
 <!-- NAVBAR -->
 <nav class="navbar navbar-expand-lg bg-white shadow-sm px-4">
-    <a class="navbar-brand fw-bold fs-4 text-dark text-decoration-none" href="home">
+    <a class="navbar-brand fw-bold fs-4 text-dark text-decoration-none" href="/betreuer">
         ThesisMatch
     </a>
 
     <div class="ms-auto d-flex gap-2">
-        <a href="betreuer" class="btn btn-dark">Home</a>
-        <a href="betreuende" class="btn btn-dark">Betreuende</a>
-        <a href="themen" class="btn btn-dark">Themen</a>
-        <a href="matching" class="btn btn-dark">Matching</a>
+        <a href="/betreuer" class="btn btn-dark">Profil</a>
+        <a href="/themen" class="btn btn-dark">Themen</a>
+        <a href="/matching" class="btn btn-dark">Matching</a>
     </div>
 </nav>
 
-<!-- MAIN CONTENT -->
-<div class="container mt-5">
-    <div class="row align-items-center">
+<div class="container mt-4">
 
-        <!-- LEFT: SLOGAN -->
-        <div class="col-md-6">
-            <h1 class="display-5 fw-semibold mb-4">
-                FANG DEINEN WEG ZUM<br>
-                PERFEKTEN BACHELOR AN
-            </h1>
-            <p class="text-muted fs-5">
-                ThesisMatch verbindet Studierende und Betreuende effizient und transparent.
-            </p>
-        </div>
+    <!-- HEADER -->
+    <div class="mb-4">
+        <h2 class="fw-semibold">
+            Willkommen
+            <span sec:authentication="principal.attributes['login']"></span>
+        </h2>
+        <p class="text-muted mb-0">
+            Hier kannst du dein Betreuerprofil bearbeiten.
+        </p>
+    </div>
 
-        <!-- RIGHT: LOGIN CARD -->
-        <div class="col-md-5 offset-md-1">
-            <div class="card border-0 shadow-sm">
-                <div class="card-body p-4 text-center">
+    <div class="row g-4">
 
-                    <!-- wird nur den Gast gezeig(nich gelogt) -->
-                    <a sec:authorize="!isAuthenticated()"
-                       href="/oauth2/authorization/github"
-                       class="btn btn-dark btn-lg w-100">
-                        <i class="fa-brands fa-github me-2"></i>
-                        Login mit GitHub
-                    </a>
+        <!-- LEFT: PROFILBILD -->
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-body text-center">
 
-                    <!-- wird eingelogte users gezeigt -->
-                    <div sec:authorize="isAuthenticated()">
-                        <p class="fs-3 fw-semibold mt-3">
-                            Willkommen PROF👋
-                        </p>
-                        <p class="fs-5">
-                            Du bist eingeloggt als
-                            <strong sec:authentication="principal.attributes['login']"></strong>
-                        </p>
-                    </div>
+                    <img th:src="@{/images/default-profile.png}"
+                         class="rounded-circle mb-3"
+                         style="width: 160px; height: 160px; object-fit: cover;"
+                         alt="Profilbild">
+
+                    <form method="post"
+                          action="/betreuer/profile-image"
+                          enctype="multipart/form-data">
+                        <input type="file"
+                               name="image"
+                               class="form-control mb-2"
+                               accept="image/*"
+                               required>
+
+                        <button type="submit" class="btn btn-outline-dark btn-sm w-100">
+                            Profilbild hochladen
+                        </button>
+                    </form>
 
                 </div>
-
             </div>
         </div>
 
+        <!-- RIGHT: PROFILDATEN -->
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-body">
+
+                    <h5 class="mb-3">Kontaktinformationen</h5>
+
+                    <form method="post" action="/betreuer/profile">
+
+                        <div class="mb-3">
+                            <label for="firstName" class="form-label">Vorname</label>
+                            <input type="text"
+                                   id="firstName"
+                                   name="firstName"
+                                   class="form-control"
+                                   th:value="${betreuer.firstName}"
+                                   required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="lastName" class="form-label">Nachname</label>
+                            <input type="text"
+                                   id="lastName"
+                                   name="lastName"
+                                   class="form-control"
+                                   th:value="${betreuer.lastName}"
+                                   required>
+                        </div>
+
+
+                        <div class="mb-3">
+                            <label class="form-label">E-Mail</label>
+                            <input type="email"
+                                   name="email"
+                                   class="form-control"
+                                   th:value="${betreuer.email}">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Telefon</label>
+                            <input type="text"
+                                   name="phone"
+                                   class="form-control"
+                                   th:value="${betreuer.phone}">
+                        </div>
+
+                        <h6 class="mt-4">Fachgebiete (Tags)</h6>
+
+                        <div class="d-flex flex-wrap gap-3 mt-2">
+                            <div th:each="tag : ${allTags}">
+                                <label class="form-check-label">
+                                    <input type="checkbox"
+                                           class="form-check-input me-1"
+                                           name="tags"
+                                           th:value="${tag}"
+                                           th:checked="${betreuer.tags.contains(tag)}">
+                                    <span th:text="${tag}"></span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-dark mt-4">
+                            Profil speichern
+                        </button>
+                    </form>
+
+                </div>
+            </div>
+        </div>
     </div>
+
+    <!-- DATEIEN -->
+    <div class="card shadow-sm mt-4">
+        <div class="card-body">
+
+            <h5>Dateien</h5>
+
+            <form method="post"
+                  action="/betreuer/files"
+                  enctype="multipart/form-data"
+                  class="row g-3 mt-2">
+
+                <div class="col-md-6">
+                    <label class="form-label">Titel</label>
+                    <input type="text" name="title" class="form-control" required>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Datei</label>
+                    <input type="file"
+                           name="file"
+                           class="form-control"
+                           accept=".pdf,.zip,.md"
+                           required>
+                </div>
+
+                <div class="col-md-12">
+                    <label class="form-label">Beschreibung (optional)</label>
+                    <textarea name="description"
+                              class="form-control"
+                              rows="2"></textarea>
+                </div>
+
+                <div class="col-md-12">
+                    <button type="submit" class="btn btn-outline-dark">
+                        Datei hochladen
+                    </button>
+                </div>
+            </form>
+
+            <hr>
+
+            <!-- Vorhandene Dateien -->
+            <div th:each="file : ${betreuer.files}" class="mb-2">
+                <i class="fa-solid fa-file me-2"></i>
+                <a th:href="@{/betreuer/files/{id}(id=${file.storedFilename})}"
+                   th:text="${file.title}"></a>
+                <span class="text-muted small">
+                    (hochgeladen am <span th:text="${file.uploadedAt}"></span>)
+                </span>
+            </div>
+
+        </div>
+    </div>
+
 </div>
 
 </body>
 </html>
-
-
