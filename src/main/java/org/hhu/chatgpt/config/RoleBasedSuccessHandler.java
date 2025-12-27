@@ -23,12 +23,9 @@ public class RoleBasedSuccessHandler implements AuthenticationSuccessHandler {
         }
         else if (authentication.getAuthorities().stream()
                 .anyMatch(a -> a.getAuthority().equals("ROLE_BETREUER"))) {
-            targetUrl = "/betreuer";
+            targetUrl = "/profil";
         }
-//        else if (authentication.getAuthorities().stream()
-//                .anyMatch(a -> a.getAuthority().equals("ROLE_STUDENT"))) {
-//            targetUrl = "/student";
-//        }
+
 
         response.sendRedirect(targetUrl);   // bei einem Match wird zur angegebenen Seite weitergeleitet
     }
