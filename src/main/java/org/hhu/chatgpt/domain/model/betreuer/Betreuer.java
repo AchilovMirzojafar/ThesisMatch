@@ -1,6 +1,6 @@
 package org.hhu.chatgpt.domain.model.betreuer;
 
-import org.hhu.chatgpt.domain.model.file.File;
+import org.hhu.chatgpt.domain.model.files.File;
 
 import java.util.List;
 
