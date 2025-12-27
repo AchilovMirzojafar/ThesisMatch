@@ -18,15 +18,20 @@
 
 <!-- NAVBAR -->
 <nav class="navbar navbar-expand-lg bg-white shadow-sm px-4">
-    <a class="navbar-brand fw-bold fs-4 text-dark text-decoration-none" href="home">
+    <a class="navbar-brand fw-bold fs-4 text-dark text-decoration-none" th:href="@{/home}">
         ThesisMatch
     </a>
 
-    <div class="ms-auto d-flex gap-2">
-        <a href="home" class="btn btn-dark">Home</a>
-        <a href="betreuende" class="btn btn-dark">Betreuende</a>
-        <a href="themen" class="btn btn-dark">Themen</a>
-        <a href="matching" class="btn btn-dark">Matching</a>
+    <div class="ms-auto d-flex gap-2"
+         sec:authorize="isAuthenticated()">
+        <a href="/profil" class="btn btn-dark"
+           sec:authorize="hasRole('BETREUER')">Profil</a>
+        <a th:href="@{/home}" class="btn btn-dark"
+           sec:authorize="!hasAnyRole('BETREUER')">Home</a>
+        <a href="betreuende" class="btn btn-dark"
+           sec:authorize="!hasAnyRole('BETREUER')">Betreuende</a>
+        <a th:href="@{/themen}" class="btn btn-dark">Themen</a>
+        <a th:href="@{/matching}" class="btn btn-dark">Matching</a>
     </div>
 </nav>
 
