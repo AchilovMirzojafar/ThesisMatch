@@ -1,4 +1,4 @@
-package org.hhu.chatgpt.domain.model.file;
+package org.hhu.chatgpt.domain.model.files;
 
 import java.time.LocalDateTime;
 

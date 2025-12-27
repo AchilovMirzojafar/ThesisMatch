@@ -1,4 +1,4 @@
-package org.hhu.chatgpt.domain.model.file;
+package org.hhu.chatgpt.domain.model.files;
 
 public enum FileType {
             PDF,
