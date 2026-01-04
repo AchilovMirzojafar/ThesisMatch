@@ -1,5 +1,6 @@
 package org.hhu.chatgpt.controllers;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.hhu.chatgpt.config.annotations.AdminOnly;
@@ -80,9 +81,9 @@ public class ChatGptController {
                                  @RequestParam(value = "phone", required = false) String phone,
                                  @RequestParam(value = "tags", required = false) String tags,
                                  RedirectAttributes ra) {
-        java.util.List<String> tagList = (tags == null || tags.isBlank())
-                ? java.util.List.of()
-                : java.util.Arrays.stream(tags.split(","))
+        List<String> tagList = (tags == null || tags.isBlank())
+                ? List.of()
+                : Arrays.stream(tags.split(","))
                     .map(String::trim)
                     .filter(s -> !s.isBlank())
                     .toList();
@@ -140,20 +141,7 @@ public class ChatGptController {
 
     @GetMapping("/edit")
     @AdminOrBetreuerOnly
-    public String edit(Model model){
-        Betreuer betreuer = new Betreuer(
-                "Max",
-                "Musterman",
-                "max.mustermann@uni.de",
-                "0211 123456",
-                List.of("Spring", "Formale Methoden", "Funktionale Programmierung"),
-                List.of()
-
-        );
-
-        model.addAttribute("betreuer", betreuer);
-        model.addAttribute("allTags",
-                List.of("Compilerbau", "Formale Methoden", "Spring", "KI"));
+    public String edit(){
         return "betreuer/edit";
     }
 
