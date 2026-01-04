@@ -17,18 +17,18 @@ public class Betreuer {
     // Hochgeladene Dateien
     private List<File> files;
 
-    public Betreuer(String vorName,
-                    String nachName,
+    public Betreuer(String firstName,
+                    String lastName,
                     String email,
                     String phone,
                     List<String> tags,
                     List<File> files) {
-        this.firstName = vorName;
-        this.lastName = nachName;
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.email = email;
         this.phone = phone;
-        this.tags = tags;
-        this.files = files;
+        this.tags = tags != null ? List.copyOf(tags) : List.of();
+        this.files = files != null ? List.copyOf(files) : List.of();
     }
 
     // Getter
