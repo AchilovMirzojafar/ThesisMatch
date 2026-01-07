@@ -3,9 +3,9 @@ package org.hhu.chatgpt.controllers;
 import java.util.Arrays;
 import java.util.List;
 
+import jakarta.validation.Valid;
 import org.hhu.chatgpt.config.annotations.AdminOnly;
 import org.hhu.chatgpt.config.annotations.AdminOrBetreuerOnly;
-import org.hhu.chatgpt.config.annotations.BetreuerOnly;
 import org.hhu.chatgpt.domain.model.Thema;
 import org.hhu.chatgpt.domain.model.betreuer.Betreuer;
 import org.hhu.chatgpt.domain.service.ThemaService;
@@ -24,18 +24,21 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Controller
 public class ChatGptController {
 
+
     private final ThemaService themaService;
     private final BetreuerService betreuerService;
 
-    public ChatGptController(ThemaService themaService, BetreuerService betreuerService) {
+
+    public ChatGptController(ThemaService themaService, @Valid BetreuerService betreuerService) {
         this.themaService = themaService;
         this.betreuerService = betreuerService;
+
     }
 
 
     @GetMapping("/")
     public String root() {
-        return "home";
+        return "student/home";
     }
 
     @GetMapping("/home")
@@ -44,7 +47,7 @@ public class ChatGptController {
         String login = user.getAttribute("login");
         System.out.println(user);
         System.out.println(login);
-        return "home";
+        return "student/home";
     }
 
     @GetMapping("/themen")
@@ -63,14 +66,14 @@ public class ChatGptController {
         model.addAttribute("tag", tag);
         model.addAttribute("requirement", requirement);
 
-        return "themen";
+        return "student/themen";
     }
 
     @GetMapping("/admin")
     @AdminOnly
     public String admin(Model model){
         model.addAttribute("betreuerListe", betreuerService.list());
-        return "admin";
+        return "admin/admin";
     }
 
     @PostMapping("/admin/betreuer")
@@ -78,9 +81,11 @@ public class ChatGptController {
     public String createBetreuer(@RequestParam("name") String name,
                                  @RequestParam("nachname") String nachname,
                                  @RequestParam("email") String email,
+                                 @RequestParam("gitHubName") String gitHubName,
                                  @RequestParam(value = "phone", required = false) String phone,
                                  @RequestParam(value = "tags", required = false) String tags,
                                  RedirectAttributes ra) {
+
         List<String> tagList = (tags == null || tags.isBlank())
                 ? List.of()
                 : Arrays.stream(tags.split(","))
@@ -88,11 +93,13 @@ public class ChatGptController {
                     .filter(s -> !s.isBlank())
                     .toList();
 
-        Betreuer b = new Betreuer(name, nachname, email, phone, tagList, java.util.List.of());
+        Betreuer b = new Betreuer(name, nachname, email, phone, gitHubName ,tagList, List.of());
         boolean created = betreuerService.create(b);
         ra.addFlashAttribute("message", created ? "Betreuer erstellt." : "E-Mail bereits vorhanden.");
         return "redirect:/admin";
     }
+
+
 
     @PostMapping("/admin/betreuer/delete")
     @AdminOnly
@@ -104,12 +111,12 @@ public class ChatGptController {
 
     @GetMapping("/betreuende")
     public String betreuende() {
-        return "betreuende";
+        return "student/betreuende";
     }
 
     @GetMapping("/matching")
     public String matching() {
-        return "matching";
+        return "student/matching";
     }
 
 
@@ -118,32 +125,8 @@ public class ChatGptController {
     public String betreuer(Model model){
         model.addAttribute("betreuer", BetreuerDummyData.getBetreuerListe());
         model.addAttribute("allTags", BetreuerDummyData.getBetreuerListe());
+
         return "betreuer/betreuer";
     }
-
-
-    @GetMapping("/profil")
-    @BetreuerOnly
-    public String profil(Model model) {
-            Betreuer betreuer = new Betreuer(
-                    "Max",
-                    "Musterman",
-                    "max.mustermann@uni.de",
-                    "0211 123456",
-                    List.of("Spring", "Formale Methoden", "Funktionale Programmierung"),
-                    List.of()
-            );
-        model.addAttribute("betreuer", betreuer);
-        model.addAttribute("allTags",
-                List.of("Compilerbau", "Formale Methoden", "Spring", "KI"));
-            return "betreuer/profil";
-    }
-
-    @GetMapping("/edit")
-    @AdminOrBetreuerOnly
-    public String edit(){
-        return "betreuer/edit";
-    }
-
 
 }
