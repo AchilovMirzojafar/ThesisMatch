@@ -42,31 +42,34 @@ public class BetreuerDummyData {
         );
 
         Betreuer betreuer1 = new Betreuer(
-                "Karla",
-                "Turing",
-                "karla.turing@hhu.de",
-                "+49 211 123456",
+                "Mirzojafar",
+                "Achilov",
+                "jafarachilov@gmail.com",
+                "+49 17671984372",
+                "AchilovMirzojafar",
                 List.of("Compilerbau", "Formale Methoden", "Theoretische Informatik"),
                 List.of(leitfadenMarkdown)
-        );
+                );
 
         Betreuer betreuer2 = new Betreuer(
-                "Max",
-                "Mustermann",
-                "max.mustermann@hhu.de",
+                "Marwan",
+                "Alkhoury",
+                "marwanakov@hhu.de",
                 "+49 211 654321",
+                "Marwanakov",
                 List.of("Webentwicklung", "Spring", "Datenbanken"),
                 List.of(exposeVorlagePdf)
-        );
+                );
 
         Betreuer betreuer3 = new Betreuer(
-                "Anna",
-                "Schmidt",
-                "anna.schmidt@hhu.de",
+                "Muhammad",
+                "Challou",
+                "muhammad.challou@hhu.de",
                 "+49 211 987654",
+                "MohamedChallou",
                 List.of("KI", "Machine Learning", "Data Science"),
                 List.of(materialZip)
-        );
+                );
 
         return List.of(betreuer1, betreuer2, betreuer3);
     }
