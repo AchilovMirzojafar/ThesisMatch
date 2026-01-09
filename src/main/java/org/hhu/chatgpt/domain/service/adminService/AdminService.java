@@ -1,4 +1,4 @@
-package org.hhu.chatgpt.domain.service;
+package org.hhu.chatgpt.domain.service.adminService;
 
 import org.hhu.chatgpt.domain.model.betreuer.Betreuer;
 import org.hhu.chatgpt.dummydata.BetreuerDummyData;
@@ -10,12 +10,12 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service
-public class BetreuerService {
+public class AdminService {
 
-    // Key: E-Mail
+    // Key: GitHub Benutzername
     private final Map<String, Betreuer> storage = new ConcurrentHashMap<>();
 
-    public BetreuerService() {
+    public AdminService() {
         // Dummy-Daten beim Start laden
         for (Betreuer betreuer : BetreuerDummyData.getBetreuerListe()) {
             storage.put(betreuer.getGitHubName(), betreuer);
@@ -30,26 +30,14 @@ public class BetreuerService {
         if (b == null || b.getGitHubName() == null || b.getGitHubName().isBlank()) {
             return false;
         }
-        return storage.putIfAbsent(b.getEmail(), b) == null;
+        return storage.putIfAbsent(b.getGitHubName(), b) == null;
     }
 
-    public boolean deleteByEmail(String email) {
-        if (email == null || email.isBlank()) {
+    public boolean deleteByLogin(String login) {
+        if (login == null || login.isBlank()) {
             return false;
         }
-        return storage.remove(email) != null;
+        return storage.remove(login) != null;
     }
-
-//    public Betreuer findByEmail(String email) {
-//        return storage.get(email);
-//    }
-    public Betreuer findByLogin(String login) {
-        return storage.get(login);
-    }
-
-    public void save(Betreuer betreuer) {
-        storage.put(betreuer.getGitHubName(), betreuer);
-    }
-
-    }
+}
 
