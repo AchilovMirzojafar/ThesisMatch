@@ -1,4 +1,4 @@
-package org.hhu.chatgpt.domain.service;
+package org.hhu.chatgpt.domain.service.studentService;
 
 import java.util.List;
 import java.util.stream.Collectors;
