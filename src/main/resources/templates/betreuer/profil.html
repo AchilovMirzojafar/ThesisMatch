@@ -27,6 +27,7 @@
         <div>
             <h2 class="fw-semibold mb-1">
                 Profil von
+                <span th:text="${betreuer.titel}"></span>
                 <span th:text="${betreuer.firstName}"></span>
                 <span th:text="${betreuer.lastName}"></span>
             </h2>
@@ -62,6 +63,7 @@
 
                     <p>
                         <strong>Name:</strong>
+                        <span th:text="${betreuer.titel}"></span>
                         <span th:text="${betreuer.firstName}"></span>
                         <span th:text="${betreuer.lastName}"></span>
                     </p>

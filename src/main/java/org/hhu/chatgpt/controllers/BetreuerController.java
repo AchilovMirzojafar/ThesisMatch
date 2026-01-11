@@ -1,7 +1,8 @@
 package org.hhu.chatgpt.controllers;
 
+import org.hhu.chatgpt.config.annotations.BetreuerOnly;
 import org.hhu.chatgpt.domain.model.betreuer.Betreuer;
-import org.hhu.chatgpt.domain.service.BetreuerService;
+import org.hhu.chatgpt.domain.service.betreuerService.BetreuerService;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,13 +25,16 @@ public class BetreuerController {
     }
 
     @GetMapping("/profil")
-    public String profil(Model model, Principal principal) {
+    public String profil(Model model,
+                         Principal principal) {
         String login = principal.getName();
-        Betreuer betreuer = betreuerService.findByLogin(login);
+        Betreuer betreuer = betreuerService.findOwnProfile(login);
 
         if (betreuer == null) {
-           return "redirect:/error";}
-
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "Profil ist als Betreuer nicht gefunden. Bitte wenden Sie sich an den Administrator.");
+        }
         model.addAttribute("betreuer", betreuer);
         model.addAttribute("allTags", betreuer.getTags());
         return "betreuer/profil";
@@ -39,7 +43,7 @@ public class BetreuerController {
     @GetMapping("/edit")
     public String edit(Model model, Principal principal) {
         String login = principal.getName();
-        Betreuer betreuer = betreuerService.findByLogin(login);
+        Betreuer betreuer = betreuerService.findOwnProfile(login);
         if (betreuer == null) {
             throw new ResponseStatusException(
                 HttpStatus.NOT_FOUND,
@@ -51,14 +55,15 @@ public class BetreuerController {
     }
 
     @PostMapping("/profil")
-    public String updateProfile(@RequestParam String firstName,
+    public String updateProfile(@RequestParam String titel,
+                                @RequestParam String firstName,
                                 @RequestParam String lastName,
                                 @RequestParam String email,
                                 @RequestParam String phone,
                                 @RequestParam(required = false) List<String> tags,
                                 Principal principal) {
         String login = principal.getName();
-        Betreuer old = betreuerService.findByLogin(login);
+        Betreuer old = betreuerService.findOwnProfile(login);
         if (old == null) {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND,
@@ -67,6 +72,7 @@ public class BetreuerController {
         List<String> newTags = tags != null ? tags : List.of();
 
         Betreuer updated = new Betreuer(
+                titel,
                 firstName,
                 lastName,
                 email,
@@ -76,7 +82,7 @@ public class BetreuerController {
                 old.getFiles()
 
         );
-        betreuerService.save(updated);
+        betreuerService.updateProfile(updated);
         return "redirect:/profil";
     }
 }

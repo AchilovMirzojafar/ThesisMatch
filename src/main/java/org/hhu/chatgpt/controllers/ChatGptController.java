@@ -5,17 +5,18 @@ import java.util.List;
 
 import jakarta.validation.Valid;
 import org.hhu.chatgpt.config.annotations.AdminOnly;
-import org.hhu.chatgpt.config.annotations.AdminOrBetreuerOnly;
 import org.hhu.chatgpt.domain.model.Thema;
 import org.hhu.chatgpt.domain.model.betreuer.Betreuer;
-import org.hhu.chatgpt.domain.service.ThemaService;
-import org.hhu.chatgpt.domain.service.BetreuerService;
-import org.hhu.chatgpt.dummydata.BetreuerDummyData;
+import org.hhu.chatgpt.domain.service.studentService.ThemaService;
+import org.hhu.chatgpt.domain.service.betreuerService.BetreuerService;
+import org.hhu.chatgpt.domain.service.adminService.AdminService;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -27,12 +28,12 @@ public class ChatGptController {
 
     private final ThemaService themaService;
     private final BetreuerService betreuerService;
+    private final AdminService adminService;
 
-
-    public ChatGptController(ThemaService themaService, @Valid BetreuerService betreuerService) {
+    public ChatGptController(ThemaService themaService, BetreuerService betreuerService, AdminService adminService) {
         this.themaService = themaService;
         this.betreuerService = betreuerService;
-
+        this.adminService = adminService;
     }
 
 
@@ -72,39 +73,63 @@ public class ChatGptController {
     @GetMapping("/admin")
     @AdminOnly
     public String admin(Model model){
-        model.addAttribute("betreuerListe", betreuerService.list());
+        model.addAttribute("betreuer", new Betreuer());
+        model.addAttribute("betreuerListe", adminService.list());
         return "admin/admin";
     }
 
-    @PostMapping("/admin/betreuer")
+    @PostMapping("/admin")
     @AdminOnly
-    public String createBetreuer(@RequestParam("name") String name,
-                                 @RequestParam("nachname") String nachname,
-                                 @RequestParam("email") String email,
-                                 @RequestParam("gitHubName") String gitHubName,
-                                 @RequestParam(value = "phone", required = false) String phone,
-                                 @RequestParam(value = "tags", required = false) String tags,
-                                 RedirectAttributes ra) {
+    public String createBetreuer(
+            @Valid @ModelAttribute("betreuer") Betreuer betreuer,
+            BindingResult bindingResult,
+            @RequestParam(value = "tags", required = false) String tags,
+            Model model,
+            RedirectAttributes ra) {
+
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("betreuerListe", adminService.list());
+            return "admin/admin";
+        }
 
         List<String> tagList = (tags == null || tags.isBlank())
                 ? List.of()
                 : Arrays.stream(tags.split(","))
-                    .map(String::trim)
-                    .filter(s -> !s.isBlank())
-                    .toList();
+                .map(String::trim)
+                .filter(s -> !s.isBlank())
+                .toList();
 
-        Betreuer b = new Betreuer(name, nachname, email, phone, gitHubName ,tagList, List.of());
-        boolean created = betreuerService.create(b);
-        ra.addFlashAttribute("message", created ? "Betreuer erstellt." : "E-Mail bereits vorhanden.");
+        Betreuer b = new Betreuer(
+                betreuer.getTitel(),
+                betreuer.getFirstName(),
+                betreuer.getLastName(),
+                betreuer.getEmail(),
+                betreuer.getPhone(),
+                betreuer.getGitHubName(),
+                tagList,
+                List.of()
+        );
+
+        boolean created = adminService.create(b);
+
+        if (!created) {
+            bindingResult.rejectValue(
+                    "gitHubName",
+                    "duplicate",
+                    "GitHub-Login existiert bereits"
+            );
+            model.addAttribute("betreuerListe", adminService.list());
+            return "admin/admin";
+        }
+
+     //   ra.addFlashAttribute("message", created ? "Betreuer erstellt." : "Betreuer  bereits vorhanden.");
         return "redirect:/admin";
     }
 
-
-
-    @PostMapping("/admin/betreuer/delete")
+    @PostMapping("/admin/delete")
     @AdminOnly
-    public String deleteBetreuer(@RequestParam("email") String email, RedirectAttributes ra) {
-        boolean deleted = betreuerService.deleteByEmail(email);
+    public String deleteBetreuer(@RequestParam("login") String login, RedirectAttributes ra) {
+        boolean deleted = adminService.deleteByLogin(login);
         ra.addFlashAttribute("message", deleted ? "Betreuer gelöscht." : "Betreuer nicht gefunden.");
         return "redirect:/admin";
     }
@@ -117,16 +142,6 @@ public class ChatGptController {
     @GetMapping("/matching")
     public String matching() {
         return "student/matching";
-    }
-
-
-    @GetMapping("/betreuer")
-    @AdminOrBetreuerOnly
-    public String betreuer(Model model){
-        model.addAttribute("betreuer", BetreuerDummyData.getBetreuerListe());
-        model.addAttribute("allTags", BetreuerDummyData.getBetreuerListe());
-
-        return "betreuer/betreuer";
     }
 
 }
