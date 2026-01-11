@@ -42,6 +42,7 @@ public class BetreuerDummyData {
         );
 
         Betreuer betreuer1 = new Betreuer(
+                "Prof.",
                 "Mirzojafar",
                 "Achilov",
                 "jafarachilov@gmail.com",
@@ -52,6 +53,7 @@ public class BetreuerDummyData {
                 );
 
         Betreuer betreuer2 = new Betreuer(
+                "Prof.",
                 "Marwan",
                 "Alkhoury",
                 "marwanakov@hhu.de",
@@ -62,6 +64,7 @@ public class BetreuerDummyData {
                 );
 
         Betreuer betreuer3 = new Betreuer(
+                "Prof.",
                 "Muhammad",
                 "Challou",
                 "muhammad.challou@hhu.de",
