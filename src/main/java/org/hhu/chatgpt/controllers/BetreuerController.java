@@ -1,11 +1,12 @@
 package org.hhu.chatgpt.controllers;
 
-import org.hhu.chatgpt.config.annotations.BetreuerOnly;
+import jakarta.validation.Valid;
 import org.hhu.chatgpt.domain.model.betreuer.Betreuer;
 import org.hhu.chatgpt.domain.service.betreuerService.BetreuerService;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -55,12 +56,9 @@ public class BetreuerController {
     }
 
     @PostMapping("/profil")
-    public String updateProfile(@RequestParam String titel,
-                                @RequestParam String firstName,
-                                @RequestParam String lastName,
-                                @RequestParam String email,
-                                @RequestParam String phone,
-                                @RequestParam(required = false) List<String> tags,
+    public String updateProfile(@Valid @ModelAttribute Betreuer betreuer,
+                                BindingResult bindingResult,
+                                Model model,
                                 Principal principal) {
         String login = principal.getName();
         Betreuer old = betreuerService.findOwnProfile(login);
@@ -69,20 +67,15 @@ public class BetreuerController {
                     HttpStatus.NOT_FOUND,
                     "Profil ist als Betreuer nicht gefunden. Bitte wenden Sie sich an den Administrator.");
         }
-        List<String> newTags = tags != null ? tags : List.of();
 
-        Betreuer updated = new Betreuer(
-                titel,
-                firstName,
-                lastName,
-                email,
-                phone,
-                old.getGitHubName(),
-                newTags,
-                old.getFiles()
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("allTags", old.getTags());
+            return "betreuer/edit";
+        }
 
-        );
-        betreuerService.updateProfile(updated);
+        betreuer.setFiles(old.getFiles());
+
+        betreuerService.updateProfile(betreuer);
         return "redirect:/profil";
     }
 }
