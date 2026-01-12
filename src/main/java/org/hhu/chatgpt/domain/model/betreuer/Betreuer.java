@@ -3,8 +3,8 @@ package org.hhu.chatgpt.domain.model.betreuer;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import org.hhu.chatgpt.domain.model.files.File;
-import org.springframework.format.annotation.NumberFormat;
 
 import java.util.List;
 
@@ -15,9 +15,13 @@ public class Betreuer {
     private  String firstName;
     @NotBlank(message = "Darf nicht leer sein!")
     private  String lastName;
-    @NotBlank(message = "Darf nicht leer sein!")
-    @Email(message = "Muss eine gültige Email Adresse sein!")
-    private  String email;
+    @NotBlank(message = "E-Mail darf nicht leer sein")
+    @Size(max = 254, message = "E-Mail ist zu lang")
+    @Email(
+            regexp = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$",
+            message = "Bitte eine gültige E-Mail-Adresse eingeben"
+    )
+    private String email;
     @Pattern(regexp = "^[0-9+\\-\\s]{6,20}$",
             message = "Ungültiges Telefonnummernformat")
     private  String phone;
