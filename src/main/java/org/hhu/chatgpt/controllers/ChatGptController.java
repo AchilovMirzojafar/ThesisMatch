@@ -150,7 +150,7 @@ public class ChatGptController {
         model.addAttribute("searchname", searchname);
         model.addAttribute("tag", tag);
 
-        return "betreuende";
+        return "student/betreuende";
     }
     @GetMapping("/matching")
     public String matching() {
