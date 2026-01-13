@@ -3,17 +3,13 @@ package org.hhu.chatgpt.controllers;
 import java.util.Arrays;
 import java.util.List;
 
-import jakarta.validation.Valid;
 import org.hhu.chatgpt.config.annotations.AdminOnly;
-import org.hhu.chatgpt.config.annotations.AdminOrBetreuerOnly;
-import org.hhu.chatgpt.config.annotations.BetreuerOnly;
 import org.hhu.chatgpt.domain.model.Betreuende;
 import org.hhu.chatgpt.domain.model.Thema;
 import org.hhu.chatgpt.domain.model.betreuer.Betreuer;
 import org.hhu.chatgpt.domain.service.BetreuendeService;
-import org.hhu.chatgpt.domain.service.BetreuerService;
-import org.hhu.chatgpt.domain.service.ThemaService;
-import org.hhu.chatgpt.dummydata.BetreuerDummyData;
+import org.hhu.chatgpt.domain.service.adminService.AdminService;
+import org.hhu.chatgpt.domain.service.studentService.ThemaService;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
@@ -25,19 +21,22 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import jakarta.validation.Valid;
+
 
 @Controller
 public class ChatGptController {
 
 
     private final ThemaService themaService;
-    private final BetreuerService betreuerService;
     private final BetreuendeService betreuendeService;
+    private final AdminService adminService;
 
-    public ChatGptController(ThemaService themaService, BetreuerService betreuerService, BetreuendeService betreuendeService) {
+
+    public ChatGptController(ThemaService themaService, BetreuendeService betreuendeService, AdminService adminService) {
         this.themaService = themaService;
-        this.betreuerService = betreuerService;
         this.betreuendeService = betreuendeService;
+        this.adminService = adminService;
     }
 
 
@@ -153,7 +152,6 @@ public class ChatGptController {
 
         return "betreuende";
     }
-
     @GetMapping("/matching")
     public String matching() {
         return "student/matching";
