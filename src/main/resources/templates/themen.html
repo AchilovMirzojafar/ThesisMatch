@@ -19,46 +19,46 @@
         ThesisMatch
     </a>
     <div class="ms-auto d-flex gap-2">
-        <a href="/profil" class="btn btn-dark"
-           sec:authorize="hasRole('BETREUER')">Profil</a>
-        <a th:href="@{/home}" class="btn btn-dark"
-           sec:authorize="!hasAnyRole('BETREUER')">Home</a>
-        <a href="betreuende" class="btn btn-dark"
-           sec:authorize="!hasAnyRole('BETREUER')">Betreuende</a>
-        <a th:href="@{/themen}" class="btn btn-dark">Themen</a>
-        <a th:href="@{/matching}" class="btn btn-dark">Matching</a>
+        <a href="home" class="btn btn-dark">Home</a>
+        <a href="betreuende" class="btn btn-dark">Betreuende</a>
+        <a href="themen" class="btn btn-dark active">Themen</a>
+        <a href="matching" class="btn btn-dark">Matching</a>
     </div>
 </nav>
 
-<div class="container mt-4">
+<main class="container my-5">
 
-    <!-- HEADER + FILTER (same layout, light box only) -->
-    <div class="card shadow-sm mb-4">
+    <!-- PAGE HEADER -->
+    <div class="mb-4">
+        <h1 class="fw-bold">Themen durchsuchen</h1>
+        <p class="text-muted">
+            Finde passende Bachelor-Themen und filtere nach Kriterien.
+        </p>
+    </div>
+
+    <!-- SEARCH & FILTER CARD -->
+    <section class="card shadow-sm mb-4">
         <div class="card-body">
 
-            <div class="d-flex justify-content-between align-items-center mb-2">
-                <div>
-                    <h4 class="mb-0">Themenübersicht</h4>
-                    <p class="text-muted mb-0">
-                        Hier kannst du die Bachelor-Themen sehen und filtern.
-                    </p>
-                </div>
+            <div class="d-flex justify-content-between align-items-center mb-3">
                 <div class="text-muted">
                     <span th:text="${resultCount} + ' Ergebnisse'">0 Ergebnisse</span>
                 </div>
             </div>
 
-            <!-- FILTER FORM (UNCHANGED LOGIC) -->
-            <form method="get" action="/themen" class="row g-2 mt-3">
+            <form method="get" action="/themen" class="row g-3">
+
                 <div class="col-md-4">
+                    <label class="form-label fw-semibold">Titel</label>
                     <input type="text"
                            name="search"
-                           placeholder="Titel durchsuchen..."
+                           placeholder="Titel durchsuchen…"
                            class="form-control"
                            th:value="${search}">
                 </div>
 
                 <div class="col-md-4">
+                    <label class="form-label fw-semibold">Tag</label>
                     <select name="tag" class="form-select">
                         <option value="">Alle Tags</option>
                         <option value="KI" th:selected="${tag == 'KI'}">KI</option>
@@ -68,6 +68,7 @@
                 </div>
 
                 <div class="col-md-4">
+                    <label class="form-label fw-semibold">Anforderung</label>
                     <select name="requirement" class="form-select">
                         <option value="">Alle Anforderungen</option>
                         <option value="Grundkenntnisse"
@@ -81,13 +82,20 @@
                     </select>
                 </div>
 
-                <div class="col-md-12 mt-2">
-                    <button type="submit" class="btn btn-dark">Filtern</button>
-                </div>
-            </form>
+                <div class="col-12 d-flex gap-2 mt-3">
+                    <button type="submit" class="btn btn-dark">
+                        <i class="fa-solid fa-magnifying-glass me-1"></i>
+                        Filtern
+                    </button>
 
+                    <a href="themen" class="btn btn-outline-secondary">
+                        Zurücksetzen
+                    </a>
+                </div>
+
+            </form>
         </div>
-    </div>
+    </section>
 
     <!-- RESULTS -->
     <div class="row">
@@ -128,7 +136,7 @@
         </div>
     </div>
 
-</div>
+</main>
 
 </body>
 </html>
