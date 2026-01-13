@@ -4,7 +4,7 @@ import org.hhu.chatgpt.config.MethodSecurityConfig;
 import org.hhu.chatgpt.config.RoleBasedSuccessHandler;
 import org.hhu.chatgpt.config.SecurityConfig;
 import org.hhu.chatgpt.helper.WithMockOAuth2User;
-import org.hhu.chatgpt.domain.service.ThemaService;
+import org.hhu.chatgpt.domain.service.studentService.ThemaService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
