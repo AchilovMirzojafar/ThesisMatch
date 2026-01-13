@@ -38,6 +38,16 @@ public class ThemaDummyData {
                 "Prof. Jens Bendo",
                 "Erstellung von Datenbanken mit Hilfe von SQL und Spring Boot",
                 "Sehr gute SQL und Java Kenntnisse empfohlen"
+            ),
+
+            new Thema(
+                "Datenbanken MariaDB und PostgeSQL",
+                "Bachelorarbeit im Bereich DB",
+                "Datenbank",
+                "Fortgeschritten",
+                "Prof. Mero Kh",
+                "Entwicklung einer Datenbanken und Neuigkeiten von MariaDB",
+                "Bestimmte Relationen Arten und Typen von Datenbanken erforderlich"
             )
         );
     }
