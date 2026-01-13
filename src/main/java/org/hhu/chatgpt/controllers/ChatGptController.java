@@ -6,10 +6,12 @@ import java.util.List;
 import org.hhu.chatgpt.config.annotations.AdminOnly;
 import org.hhu.chatgpt.config.annotations.AdminOrBetreuerOnly;
 import org.hhu.chatgpt.config.annotations.BetreuerOnly;
+import org.hhu.chatgpt.domain.model.Betreuende;
 import org.hhu.chatgpt.domain.model.Thema;
 import org.hhu.chatgpt.domain.model.betreuer.Betreuer;
-import org.hhu.chatgpt.domain.service.ThemaService;
+import org.hhu.chatgpt.domain.service.BetreuendeService;
 import org.hhu.chatgpt.domain.service.BetreuerService;
+import org.hhu.chatgpt.domain.service.ThemaService;
 import org.hhu.chatgpt.dummydata.BetreuerDummyData;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -26,10 +28,12 @@ public class ChatGptController {
 
     private final ThemaService themaService;
     private final BetreuerService betreuerService;
+    private final BetreuendeService betreuendeService;
 
-    public ChatGptController(ThemaService themaService, BetreuerService betreuerService) {
+    public ChatGptController(ThemaService themaService, BetreuerService betreuerService, BetreuendeService betreuendeService) {
         this.themaService = themaService;
         this.betreuerService = betreuerService;
+        this.betreuendeService = betreuendeService;
     }
 
 
@@ -103,7 +107,18 @@ public class ChatGptController {
     }
 
     @GetMapping("/betreuende")
-    public String betreuende() {
+    public String betreuende(
+            @RequestParam(name = "searchname", required = false) String searchname,
+            @RequestParam(name = "tag", required = false) String tag,
+            Model model) {
+
+        List<Betreuende> searched =
+                betreuendeService.getGesuchteName(searchname, tag);
+
+        model.addAttribute("betreuendeListe", searched);
+        model.addAttribute("searchname", searchname);
+        model.addAttribute("tag", tag);
+
         return "betreuende";
     }
 
