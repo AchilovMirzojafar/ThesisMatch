@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="UTF-8">
+    <title>ThesisMatch - Themen</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/public.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+
+<body class="bg-light">
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg bg-white shadow-sm px-4">
+    <a class="navbar-brand fw-bold fs-4 text-dark text-decoration-none" th:href="@{/home}">
+        ThesisMatch
+    </a>
+    <div class="ms-auto d-flex gap-2">
+        <a href="home" class="btn btn-dark">Home</a>
+        <a href="betreuende" class="btn btn-dark">Betreuende</a>
+        <a href="themen" class="btn btn-dark active">Themen</a>
+        <a href="matching" class="btn btn-dark">Matching</a>
+    </div>
+</nav>
+
+<main class="container my-5">
+
+    <!-- PAGE HEADER -->
+    <div class="mb-4">
+        <h1 class="fw-bold">Themen durchsuchen</h1>
+        <p class="text-muted">
+            Finde passende Bachelor-Themen und filtere nach Kriterien.
+        </p>
+    </div>
+
+    <!-- SEARCH & FILTER CARD -->
+    <section class="card shadow-sm mb-4">
+        <div class="card-body">
+
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div class="text-muted">
+                    <span th:text="${resultCount} + ' Ergebnisse'">0 Ergebnisse</span>
+                </div>
+            </div>
+
+            <form method="get" action="/themen" class="row g-3">
+
+                <div class="col-md-4">
+                    <label class="form-label fw-semibold">Titel</label>
+                    <input type="text"
+                           name="search"
+                           placeholder="Titel durchsuchen…"
+                           class="form-control"
+                           th:value="${search}">
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label fw-semibold">Tag</label>
+                    <select name="tag" class="form-select">
+                        <option value="">Alle Tags</option>
+                        <option value="KI" th:selected="${tag == 'KI'}">KI</option>
+                        <option value="Web" th:selected="${tag == 'Web'}">Web</option>
+                        <option value="Datenbank" th:selected="${tag == 'Datenbank'}">Datenbank</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label fw-semibold">Anforderung</label>
+                    <select name="requirement" class="form-select">
+                        <option value="">Alle Anforderungen</option>
+                        <option value="Grundkenntnisse"
+                                th:selected="${requirement == 'Grundkenntnisse'}">
+                            Grundkenntnisse
+                        </option>
+                        <option value="Fortgeschritten"
+                                th:selected="${requirement == 'Fortgeschritten'}">
+                            Fortgeschritten
+                        </option>
+                    </select>
+                </div>
+
+                <div class="col-12 d-flex gap-2 mt-3">
+                    <button type="submit" class="btn btn-dark">
+                        <i class="fa-solid fa-magnifying-glass me-1"></i>
+                        Filtern
+                    </button>
+
+                    <a href="themen" class="btn btn-outline-secondary">
+                        Zurücksetzen
+                    </a>
+                </div>
+
+            </form>
+        </div>
+    </section>
+
+    <!-- RESULTS -->
+    <div class="row">
+        <div class="col-md-4 mb-3" th:each="thema : ${themenListe}">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+
+                    <h5 class="card-title" th:text="${thema.title}">
+                        Titel der Bachelorarbeit
+                    </h5>
+
+                    <p class="mb-1">
+                        <strong>Betreuer:</strong>
+                        <span th:text="${thema.profName}">Prof. Max Mustermann</span>
+                    </p>
+
+                    <p class="mb-2">
+                        <strong>Ziel:</strong>
+                        <span th:text="${thema.goal}">
+                            Ziel der Bachelorarbeit
+                        </span>
+                    </p>
+
+                    <p class="text-muted small mb-3">
+                        <strong>Hinweise:</strong>
+                        <span th:text="${thema.notes}">
+                            Hinweise zur Arbeit
+                        </span>
+                    </p>
+
+                    <a href="#" class="btn btn-outline-dark btn-sm">
+                        <i class="fa-solid fa-file-pdf me-1"></i>
+                        PDF herunterladen
+                    </a>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</main>
+
+</body>
+</html>

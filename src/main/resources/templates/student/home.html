@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8">
+    <title>ThesisMatch – Login</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+
+<body class="bg-light">
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg bg-white shadow-sm px-4">
+    <a class="navbar-brand fw-bold fs-4 text-dark text-decoration-none" th:href="@{/home}">
+        ThesisMatch
+    </a>
+
+    <div class="ms-auto d-flex gap-2"
+         sec:authorize="isAuthenticated()">
+        <a href="/profil" class="btn btn-dark"
+           sec:authorize="hasRole('BETREUER')">Profil</a>
+        <a th:href="@{/home}" class="btn btn-dark"
+           sec:authorize="!hasAnyRole('BETREUER')">Home</a>
+        <a href="betreuende" class="btn btn-dark"
+           sec:authorize="!hasAnyRole('BETREUER')">Betreuende</a>
+        <a th:href="@{/themen}" class="btn btn-dark">Themen</a>
+        <a th:href="@{/matching}" class="btn btn-dark">Matching</a>
+    </div>
+</nav>
+
+<!-- MAIN CONTENT -->
+<div class="container mt-5">
+    <div class="row align-items-center">
+
+        <!-- LEFT: SLOGAN -->
+        <div class="col-md-6">
+            <h1 class="display-5 fw-semibold mb-4">
+                FANG DEINEN WEG ZUM<br>
+                PERFEKTEN BACHELOR AN
+            </h1>
+            <p class="text-muted fs-5">
+                ThesisMatch verbindet Studierende und Betreuende effizient und transparent.
+            </p>
+        </div>
+
+        <!-- RIGHT: LOGIN CARD -->
+        <div class="col-md-5 offset-md-1">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4 text-center">
+
+                    <!-- wird nur den Gast gezeig(nich gelogt) -->
+                    <a sec:authorize="!isAuthenticated()"
+                       href="/oauth2/authorization/github"
+                       class="btn btn-dark btn-lg w-100">
+                        <i class="fa-brands fa-github me-2"></i>
+                        Login mit GitHub
+                    </a>
+
+                    <!-- wird gelogte users gezeigt -->
+                    <div sec:authorize="isAuthenticated()">
+                        <p class="fs-3 fw-semibold mt-3">
+                            Willkommen 👋
+                        </p>
+                        <p class="fs-5">
+                            Du bist eingeloggt als
+                            <strong sec:authentication="principal.attributes['login']"></strong>
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+</body>
+</html>
+
+
