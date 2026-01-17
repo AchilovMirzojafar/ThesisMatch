@@ -46,7 +46,8 @@ public class AdminController {
             @Valid @ModelAttribute("betreuer") Betreuer betreuer,
             BindingResult bindingResult,
             @RequestParam(value = "tags", required = false) String tags,
-            Model model) {
+            Model model,
+            RedirectAttributes ra) {
 
         if (bindingResult.hasErrors()) {
             model.addAttribute("betreuerListe", betreuerReadService.list());
@@ -83,7 +84,7 @@ public class AdminController {
             return "admin/admin";
         }
 
-        //   ra.addFlashAttribute("message", created ? "Betreuer erstellt." : "Betreuer  bereits vorhanden.");
+           ra.addFlashAttribute("message", "Betreuer erstellt.");
         return "redirect:/admin";
     }
 
