@@ -1,6 +1,7 @@
 package org.hhu.chatgpt.controllers;
 
 import jakarta.validation.Valid;
+import org.hhu.chatgpt.config.annotations.AdminOrBetreuerOnly;
 import org.hhu.chatgpt.domain.model.betreuer.Betreuer;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -27,6 +28,7 @@ public class BetreuerController {
     }
 
     @GetMapping("/profil")
+    @AdminOrBetreuerOnly
     public String profil(Model model,
                          Principal principal) {
         String login = principal.getName();
@@ -43,6 +45,7 @@ public class BetreuerController {
     }
 
     @GetMapping("/edit")
+    @AdminOrBetreuerOnly
     public String edit(Model model, Principal principal) {
         String login = principal.getName();
         Betreuer betreuer = betreuerReadService.findProfile(login);
@@ -57,6 +60,7 @@ public class BetreuerController {
     }
 
     @PostMapping("/profil")
+    @AdminOrBetreuerOnly
     public String updateProfile(@Valid @ModelAttribute Betreuer betreuer,
                                 BindingResult bindingResult,
                                 Model model,
