@@ -1,10 +1,9 @@
 package org.hhu.chatgpt.domain.service.studentService;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
-import org.hhu.chatgpt.dummydata.ThemaDummyData;
 import org.hhu.chatgpt.domain.model.Thema;
+import org.hhu.chatgpt.dummydata.ThemaDummyData;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -16,9 +15,26 @@ public class ThemaService {
             String requirement) {
 
         return ThemaDummyData.getAlleThemen().stream()
-                .filter(t -> search == null || t.getTitle().toLowerCase().contains(search.toLowerCase()))
-                .filter(t -> tag == null || tag.isEmpty() || t.getTag().equals(tag))
-                .filter(t -> requirement == null || requirement.isEmpty() || t.getRequirement().equals(requirement))
-                .collect(Collectors.toList());
+
+                // Title search
+                .filter(t ->
+                        search == null || search.isBlank()
+                                || t.getTitle().toLowerCase().contains(search.toLowerCase())
+                )
+
+                // Tag filter
+                .filter(t ->
+                        tag == null || tag.isBlank()
+                                || t.getTags().contains(tag)
+                )
+
+                // Requirement filter
+                .filter(t ->
+                        requirement == null || requirement.isBlank()
+                                || t.getRequirements().contains(requirement)
+                )
+
+                .toList();
     }
 }
+
