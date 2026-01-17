@@ -30,8 +30,10 @@
            sec:authorize="!hasAnyRole('BETREUER')">Home</a>
         <a href="betreuende" class="btn btn-dark"
            sec:authorize="!hasAnyRole('BETREUER')">Betreuende</a>
-        <a th:href="@{/themen}" class="btn btn-dark">Themen</a>
-        <a th:href="@{/matching}" class="btn btn-dark">Matching</a>
+        <a th:href="@{/themen}" class="btn btn-dark"
+           sec:authorize="!hasAnyRole('BETREUER')">Themen</a>
+        <a th:href="@{/matching}" class="btn btn-dark"
+           sec:authorize="!hasAnyRole('BETREUER')">Matching</a>
     </div>
 </nav>
 
