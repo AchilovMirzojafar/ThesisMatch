@@ -123,14 +123,21 @@
     </div>
 
     <div class="mb-4 d-flex align-items-center">
-    <div class="ms-auto">
-        <a th:href="@{/edit}"
-           class="btn btn-outline-dark">
-            <i class="fa-solid fa-pen me-1"></i>
-            Profil bearbeiten
-        </a>
+        <div class="ms-auto d-flex gap-2">
+            <a th:href="@{/edit}"
+               class="btn btn-outline-dark">
+                <i class="fa-solid fa-pen me-1"></i>
+                Profil bearbeiten
+            </a>
+
+            <a th:href="@{/newThema}"
+               class="btn btn-outline-primary">
+                <i class="fa-solid fa-plus me-1"></i>
+                Neues Thema
+            </a>
+        </div>
     </div>
-    </div>
+
 
 </div>
 
