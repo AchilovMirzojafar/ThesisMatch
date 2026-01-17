@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+  <meta charset="UTF-8">
+  <title>ThesisMatch – Admin</title>
+
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+
+<body class="bg-light">
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg bg-white shadow-sm px-4">
+  <a class="navbar-brand fw-bold fs-4 text-dark text-decoration-none" th:href="@{/home}">
+    ThesisMatch
+  </a>
+
+</nav>
+
+<div class="container-fluid px-4 mt-4" style="max-width: 1000px;">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+
+    <!-- Erster Slogan ganz links -->
+    <div class="text-start">
+      <h1 class="display-6 fw-semibold mb-0">
+        ADMIN<br>
+        VERWALTUNG
+      </h1><br>
+      <h2 class="display-15 fw-semibold mb-0">
+        Änderung nötig?
+      </h2>
+    </div>
+
+    <!-- Zweiter Slogan ganz rechts -->
+    <div class="text-end">
+      <p class="fs-5 fw-semibold mb-1">
+        Willkommen ADMIN 👋
+      </p>
+      <p class="fs-6 mb-0">
+        Du bist eingeloggt als
+        <strong sec:authentication="principal.attributes['login']"></strong>
+      </p>
+    </div>
+
+  </div>
+
+  <!-- Feedback Nachricht -->
+  <div th:if="${message}" class="alert alert-info" th:text="${message}"></div>
+
+  <div class="col-md-8">
+    <div class="card shadow-sm">
+      <div class="card-body">
+
+        <h5 class="mb-3">Kontaktinformationen</h5>
+
+        <form method="post" th:action="@{/admin/edit}" th:object="${betreuer}">
+
+          <!-- TITEL (отдельная строка, компактно) -->
+          <div class="row mb-2">
+            <div class="col-md-4">
+              <label for="titel" class="form-label mb-1">Titel</label>
+              <select id="titel"
+                      th:field="*{titel}"
+                      class="form-select form-select-sm"
+                      required>
+                <option value="" disabled>-- Bitte wählen --</option>
+                <option value="Prof.">Prof.</option>
+                <option value="Dr.">Dr.</option>
+                <option value="Prof. Dr.">Prof. Dr.</option>
+                <option value="Dipl.-Ing.">Dipl.-Ing.</option>
+                <option value="Mag.">Mag.</option>
+              </select>
+              <div class="text-danger small"
+                   th:if="${#fields.hasErrors('titel')}"
+                   th:errors="*{titel}">
+              </div>
+            </div>
+          </div>
+
+          <!-- VORNAME + NACHNAME (одна строка, маленький отступ) -->
+          <div class="row g-2 mb-3">
+            <div class="col-md-6">
+              <label for="firstName" class="form-label mb-1">Vorname</label>
+              <input type="text"
+                     id="firstName"
+                     th:field="*{firstName}"
+                     class="form-control form-control-sm"
+                     placeholder="Vorname">
+              <div class="text-danger small"
+                   th:if="${#fields.hasErrors('firstName')}"
+                   th:errors="*{firstName}">
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <label for="lastName" class="form-label mb-1">Nachname</label>
+              <input type="text"
+                     id="lastName"
+                     th:field="*{lastName}"
+                     class="form-control form-control-sm"
+                     placeholder="Nachname">
+              <div class="text-danger small"
+                   th:if="${#fields.hasErrors('lastName')}"
+                   th:errors="*{lastName}">
+              </div>
+            </div>
+          </div>
+
+          <!-- E-MAIL + GITHUB (в одной строке) -->
+          <div class="row g-2 mb-3">
+            <div class="col-md-6">
+              <label class="form-label mb-1">E-Mail</label>
+              <input type="email"
+                     th:field="*{email}"
+                     placeholder="E-Mail eingeben"
+                     class="form-control form-control-sm"/>
+              <div class="text-danger small"
+                   th:if="${#fields.hasErrors('email')}"
+                   th:errors="*{email}">
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label mb-1">GitHub Benutzername</label>
+              <input type="text"
+                     th:field="*{gitHubName}"
+                     placeholder="GitHub Benutzername eingeben"
+                     class="form-control form-control-sm"/>
+              <div class="text-danger small"
+                   th:if="${#fields.hasErrors('gitHubName')}"
+                   th:errors="*{gitHubName}">
+              </div>
+            </div>
+          </div>
+
+          <div class="col-12 col-md-6">
+            <label for="phone" class="form-label">Telefon</label>
+            <input type="text"
+                   id="phone"
+                   th:field="*{phone}"
+                   placeholder="Telefon eingeben"
+                   class="form-control form-control-sm"/>
+
+            <div class="text-danger small"
+                 th:if="${#fields.hasErrors('phone')}"
+                 th:errors="*{phone}">
+            </div>
+          </div>
+
+          <!-- TAGS -->
+          <h6 class="mt-3">Fachgebiete (Tags)</h6>
+          <div class="d-flex flex-wrap gap-3 mt-2">
+            <div th:each="tag : ${allTags}">
+              <label class="form-check-label">
+                <input type="checkbox"
+                       class="form-check-input me-1"
+                       name="existingTags"
+                       th:value="${tag}"
+                       th:checked="${betreuer.tags.contains(tag)}">
+                <span th:text="${tag}"></span>
+              </label>
+            </div>
+          </div>
+
+          <div class="mt-3">
+            <label for="newTags" class="form-label">
+              Weitere Tags (kommagetrennt)
+            </label>
+            <input type="text"
+                   id="newTags"
+                   name="newTags"
+                   class="form-control"
+                   placeholder="z. B. KI, Datenschutz, NLP">
+          </div>
+
+
+          <button type="submit" class="btn btn-dark mt-4">
+            Profil speichern
+          </button>
+
+        </form>
+      </div>
+    </div>
+  </div>
+
+</div>
+<div class="container-fluid px-4 mt-4" style="max-width: 1000px;">
+</div>
+
+</body>
+</html>
