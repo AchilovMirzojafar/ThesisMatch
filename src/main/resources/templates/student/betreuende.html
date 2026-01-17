@@ -46,12 +46,8 @@
                         <label for="searchname" class="form-label fw-semibold">
                             Name
                         </label>
-                        <input  id="searchname"
-                                name="searchname"
-                                type="search"
-                                class="form-control"
-                                th:value="${searchname}"
-                                placeholder="Name suchen…">
+                        <input id="searchname" name="searchname" type="search" class="form-control"
+                            th:value="${searchname}" placeholder="Name suchen…">
                     </div>
 
                     <div class="col-md-6">
@@ -61,10 +57,11 @@
                         <select id="fachgebiet" name="tag" class="form-select">
                             <option value="">Alle Fachgebiete</option>
                             <option value="compilerbau" th:selected="${tag == 'compilerbau'}">Compilerbau</option>
-                            <option value="formale-methoden" th:selected="${tag == 'formale-methoden'}">Formale Methoden</option>
-                            <option value="organisation" th:selected="${tag == 'organisation'}">Organisation</option>
-                            <option value="rust" th:selected="${tag == 'rust'}">Rust</option>
-                            <option value="programmierung" th:selected="${tag == 'programmierung'}">Programmierung</option>
+                            <option value="formale methoden" th:selected="${tag == 'formale methoden'}">Formale Methoden</option>
+                            <option value="theoretische Informatik" th:selected="${tag == 'theoretische Informatik'}">Theoretische Informatik</option>
+                            <option value="webentwicklung" th:selected="${tag == 'webentwicklung'}">Webentwicklung</option>
+                            <option value="spring" th:selected="${tag == 'spring'}">Spring</option>
+                            <option value="KI" th:selected="${tag == 'KI'}">KI</option>
                         </select>
                     </div>
 
@@ -82,45 +79,41 @@
             </div>
         </section>
 
-    <!-- RESULTS -->
-<section aria-label="Suchergebnisse">
-    <h2 class="fw-bold mb-3">Suchergebnisse</h2>
+        <!-- RESULTS -->
+        <section aria-label="Suchergebnisse">
+            <h2 class="fw-bold mb-3">Suchergebnisse</h2>
 
-    <div class="d-flex flex-column gap-3">
+            <div class="d-flex flex-column gap-3">
 
-        <div class="border rounded-3 bg-white px-4 py-3
+                <div class="border rounded-3 bg-white px-4 py-3
                     d-flex justify-content-between align-items-center
-                    shadow-sm"
-             th:each="betreuende : ${betreuendeListe}">
+                    shadow-sm" th:each="betreuer : ${betreuendeListe}">
 
-            <!-- LEFT -->
-            <div>
-                <h5 class="fw-bold mb-1"
-                    th:text="${betreuende.name}">
-                    Jens Bendo
-                </h5>
+                    <!-- LEFT -->
+                    <div>
+                        <h5 class="fw-bold mb-1" th:text="${betreuer.titel + ' ' + betreuer.firstName + ' ' + betreuer.lastName}">
+                            Jens Bendo
+                        </h5>
 
-                <div class="text-muted small">
-                    Fachgebiet:
-                    <span class="fw-bold text-dark"
-                          th:text="${betreuende.tag}">
-                        Compilerbau
-                    </span>
+                        <div class="text-muted small">
+                            Fachgebiet:
+                                <span class="fw-bold text-dark"
+                                 th:text="${#strings.listJoin(betreuer.tags, ', ')}">>Compilerbau, KI</span>
+                        </div>
+
+                    </div>
+
+                    <!-- RIGHT -->
+                    <a href="#" class="btn btn-outline-dark btn-sm px-3">
+                        Details ansehen
+                    </a>
                 </div>
+
             </div>
-
-            <!-- RIGHT -->
-            <a href="#"
-               class="btn btn-outline-dark btn-sm px-3">
-                Details ansehen
-            </a>
-        </div>
-
-    </div>
-</section>
+        </section>
 
 
-</section>
+        </section>
 
 
     </main>

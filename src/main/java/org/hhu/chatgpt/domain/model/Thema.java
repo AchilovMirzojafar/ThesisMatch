@@ -1,40 +1,33 @@
 package org.hhu.chatgpt.domain.model;
 
+import java.util.List;
+
 public class Thema {
 
     private String title;
     private String description;
-    private String tag;
-    private String requirement;
 
-    private String profName;
-    private String goal;
-    private String notes;
+    private List<String> tags;
+    private List<String> requirements;
+
+    private String betreuerName;
 
     public Thema(String title,
                  String description,
-                 String tag,
-                 String requirement,
-                 String profName,
-                 String goal,
-                 String notes) {
+                 List<String> tags,
+                 List<String> requirements,
+                String betreuerName) {
 
         this.title = title;
         this.description = description;
-        this.tag = tag;
-        this.requirement = requirement;
-        this.profName = profName;
-        this.goal = goal;
-        this.notes = notes;
+        this.tags = tags;
+        this.requirements = requirements;
+        this.betreuerName = betreuerName;
     }
 
-    // Getters
     public String getTitle() { return title; }
     public String getDescription() { return description; }
-    public String getTag() { return tag; }
-    public String getRequirement() { return requirement; }
-
-    public String getProfName() { return profName; }
-    public String getGoal() { return goal; }
-    public String getNotes() { return notes; }
+    public List<String> getTags() { return tags; }
+    public List<String> getRequirements() { return requirements; }
+    public String getBetreuerName() { return betreuerName; }
 }
