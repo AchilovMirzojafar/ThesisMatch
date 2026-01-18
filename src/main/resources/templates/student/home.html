@@ -24,11 +24,13 @@
 
     <div class="ms-auto d-flex gap-2"
          sec:authorize="isAuthenticated()">
-        <a href="/profil" class="btn btn-dark"
+        <a th:href="@{/admin}" class="btn btn-dark"
+           sec:authorize="hasRole('ADMIN')">Adminansicht</a>
+        <a th:href="@{/profil}" class="btn btn-dark"
            sec:authorize="hasRole('BETREUER')">Profil</a>
         <a th:href="@{/home}" class="btn btn-dark"
            sec:authorize="!hasAnyRole('BETREUER')">Home</a>
-        <a href="betreuende" class="btn btn-dark"
+        <a th:href="@{/betreuende}" class="btn btn-dark"
            sec:authorize="!hasAnyRole('BETREUER')">Betreuende</a>
         <a th:href="@{/themen}" class="btn btn-dark"
            sec:authorize="!hasAnyRole('BETREUER')">Themen</a>
