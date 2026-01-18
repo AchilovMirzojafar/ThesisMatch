@@ -16,6 +16,7 @@ import org.hhu.chatgpt.application.applicationservice.BetreuerReadService;
 import java.security.Principal;
 
 @Controller
+@AdminOrBetreuerOnly
 public class BetreuerController {
 
     private final BetreuerWriteService betreuerWriteService;
@@ -28,7 +29,6 @@ public class BetreuerController {
     }
 
     @GetMapping("/profil")
-    @AdminOrBetreuerOnly
     public String profil(Model model,
                          Principal principal) {
         String login = principal.getName();
@@ -45,7 +45,6 @@ public class BetreuerController {
     }
 
     @GetMapping("/edit")
-    @AdminOrBetreuerOnly
     public String edit(Model model, Principal principal) {
         String login = principal.getName();
         Betreuer betreuer = betreuerReadService.findProfile(login);
@@ -60,7 +59,6 @@ public class BetreuerController {
     }
 
     @PostMapping("/profil")
-    @AdminOrBetreuerOnly
     public String updateProfile(@Valid @ModelAttribute Betreuer betreuer,
                                 BindingResult bindingResult,
                                 Model model,
