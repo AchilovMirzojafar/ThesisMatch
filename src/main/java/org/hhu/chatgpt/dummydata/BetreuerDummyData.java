@@ -1,11 +1,11 @@
 package org.hhu.chatgpt.dummydata;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 import org.hhu.chatgpt.domain.model.betreuer.Betreuer;
 import org.hhu.chatgpt.domain.model.files.File;
 import org.hhu.chatgpt.domain.model.files.FileType;
-
-import java.time.LocalDateTime;
-import java.util.List;
 
 public class BetreuerDummyData {
 
@@ -74,6 +74,17 @@ public class BetreuerDummyData {
                 List.of(materialZip)
                 );
 
-        return List.of(betreuer1, betreuer2, betreuer3);
+        Betreuer betreuer4 = new Betreuer(
+                "Prof.",
+                "John",
+                "Müller",
+                "john.müller@hhu.de",
+                "+49 211 98124412",
+                "Johmmu",
+                List.of("Computernetzwerke", "Rechnerarchitektur ", "Socketprogrammierung"),
+                List.of(materialZip)
+                );
+
+        return List.of(betreuer1, betreuer2, betreuer3, betreuer4);
     }
 }
