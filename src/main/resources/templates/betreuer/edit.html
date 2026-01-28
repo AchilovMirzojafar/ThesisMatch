@@ -81,7 +81,6 @@
                             </div>
                         </div>
 
-                        <!-- VORNAME + NACHNAME (одна строка, маленький отступ) -->
                         <div class="row g-2 mb-3">
                             <div class="col-md-6">
                                 <label for="firstName" class="form-label mb-1">Vorname</label>
@@ -125,14 +124,14 @@
                             </div>
 
                             <div class="col-md-6">
-                                <label class="form-label mb-1">GitHub Benutzername</label>
+                                <label class="form-label mb-1">GitHub Id</label>
                                 <input type="text"
-                                       th:field="*{gitHubName}"
-                                       placeholder="GitHub Benutzername eingeben"
+                                       th:field="*{fachId}"
+                                       placeholder="GitHub Id eingeben"
                                        class="form-control form-control-sm"/>
                                 <div class="text-danger small"
-                                     th:if="${#fields.hasErrors('gitHubName')}"
-                                     th:errors="*{gitHubName}">
+                                     th:if="${#fields.hasErrors('fachId')}"
+                                     th:errors="*{fachId}">
                                 </div>
                             </div>
                         </div>

@@ -1,14 +1,16 @@
 package org.hhu.chatgpt.domain.model.betreuer;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
+import org.hhu.chatgpt.domain.model.Thema;
 import org.hhu.chatgpt.domain.model.files.File;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class Betreuer {
+    @NotNull(message = "Darf nicht leer sein!")
+    private  Integer fachId;
     @NotBlank(message = "Titel muss ausgewählt werden!")
     private String titel;
     @NotBlank(message = "Darf nicht leer sein!")
@@ -27,29 +29,31 @@ public class Betreuer {
     private  String phone;
     private  List<String> tags;
     private  List<File> files;
+    private  Set<Thema> themenSet;
 
 
-    @NotBlank(message = "Darf nicht leer sein!")
-    private  String gitHubName;
+
 
     public Betreuer(String titel,
                     String firstName,
                     String lastName,
                     String email,
                     String phone,
-                    String gitHubName,
+                    Integer fachId,
                     List<String> tags,
-                    List<File> files
+                    List<File> files,
+                    Set<Thema> themenSet
 
-                   ) {
+    ) {
         this.titel = titel;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.phone = phone;
-        this.gitHubName = gitHubName;
+        this.fachId = fachId;
         this.tags = tags != null ? List.copyOf(tags) : List.of();
         this.files = files != null ? List.copyOf(files) : List.of();
+        this.themenSet = themenSet;
     }
 
     public Betreuer(){}
@@ -59,12 +63,14 @@ public class Betreuer {
     public String getLastName() { return lastName; }
     public String getEmail() { return email; }
     public String getPhone() { return phone; }
-    public String getGitHubName() { return gitHubName; }
+    public Integer getFachId() { return fachId; }
     public List<String> getTags() { return tags; }
     public List<File> getFiles() { return files; }
+    public Set<Thema> getThemenSet() {return themenSet;}
 
+    public void setThemenSet(Set<Thema> themenSet) { this.themenSet = (themenSet == null) ? new HashSet<>() : new HashSet<>(themenSet);}
     public void setTitel(String titel) { this.titel = titel; }
-    public void setGitHubName(String gitHubName) {this.gitHubName = gitHubName;}
+    public void setFachId(Integer gitHubId) {this.fachId = gitHubId;}
     public void setFiles(List<File> files) { this.files = files; }
     public void setTags(List<String> tags) { this.tags = tags; }
     public void setPhone(String phone){ this.phone = phone; }

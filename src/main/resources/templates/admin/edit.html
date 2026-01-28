@@ -130,12 +130,12 @@
             <div class="col-md-6">
               <label class="form-label mb-1">GitHub Benutzername</label>
               <input type="text"
-                     th:field="*{gitHubName}"
+                     th:field="*{fachId}"
                      placeholder="GitHub Benutzername eingeben"
                      class="form-control form-control-sm"/>
               <div class="text-danger small"
-                   th:if="${#fields.hasErrors('gitHubName')}"
-                   th:errors="*{gitHubName}">
+                   th:if="${#fields.hasErrors('fachId')}"
+                   th:errors="*{fachId}">
               </div>
             </div>
           </div>

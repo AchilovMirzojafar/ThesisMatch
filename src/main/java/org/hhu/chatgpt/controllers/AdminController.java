@@ -67,16 +67,17 @@ public class AdminController {
                 betreuer.getLastName(),
                 betreuer.getEmail(),
                 betreuer.getPhone(),
-                betreuer.getGitHubName(),
+                betreuer.getFachId(),
                 tagList,
-                List.of()
+                List.of(),
+                Set.of()
         );
 
         boolean created = betreuerWriteService.create(b);
 
         if (!created) {
             bindingResult.rejectValue(
-                    "gitHubName",
+                    "fachId",
                     "duplicate",
                     "GitHub-Login existiert bereits"
             );
@@ -90,13 +91,14 @@ public class AdminController {
 
     @GetMapping("/admin/edit")
     @AdminOnly
-    public String updateBetreuer(@RequestParam("login") String login, Model model) {
-        Betreuer betreuer = betreuerReadService.findProfile(login);
+    public String updateBetreuer(@RequestParam("id") Integer id, Model model) {
+        Betreuer betreuer = betreuerReadService.findProfile(id);
         if (betreuer == null) {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND,
                     "Profil ist als Betreuer nicht gefunden. Bitte wenden Sie sich an den Administrator.");
         }
+
         model.addAttribute("betreuer", betreuer);  //
         model.addAttribute("allTags", betreuer.getTags());
         return "admin/edit";
@@ -132,8 +134,8 @@ public class AdminController {
 
     @PostMapping("/admin/delete")
     @AdminOnly
-    public String deleteBetreuer(@RequestParam("login") String login, RedirectAttributes ra) {
-        boolean deleted = betreuerWriteService.deleteByLogin(login);
+    public String deleteBetreuer(@RequestParam("id") Integer id, RedirectAttributes ra) {
+        boolean deleted = betreuerWriteService.deleteById(id);
         ra.addFlashAttribute("message", deleted ? "Betreuer gelöscht." : "Betreuer nicht gefunden.");
         return "redirect:/admin";
     }

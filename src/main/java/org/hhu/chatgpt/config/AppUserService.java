@@ -20,13 +20,14 @@ import java.util.stream.Collectors;
 public class AppUserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
 
     private final DefaultOAuth2UserService defaultService = new DefaultOAuth2UserService();
-    private final Set<String> adminLogins; //Speichert Namen der Admins
+    private final Set<Integer> adminLogins; //Speichert ID der Admins
 
     public AppUserService(@Value("${security.admins:}") String adminsCsv) {
         this.adminLogins = Arrays.stream(adminsCsv.split(","))
-                .map(String::trim) //entfern Whitespaces
-                .filter(s -> !s.isEmpty()) // nur nicht-leeere Strings ausgewählt
-                .collect(Collectors.toSet()); //speichert Admin-Namen in adminLogins
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                .map(Integer::valueOf)
+                .collect(Collectors.toSet());
     }
 
     @Override
@@ -37,14 +38,14 @@ public class AppUserService implements OAuth2UserService<OAuth2UserRequest, OAut
 
         authorities.add(new SimpleGrantedAuthority("ROLE_STUDENT"));
 
-        String login = (originalUser.getAttribute("login"));
-        if (login != null && adminLogins.contains(login)) { //Prüfung, ob Name in adminLogin enthalten ist
+        Integer id = (originalUser.getAttribute("id"));
+        if (id != null && adminLogins.contains(id)) { //Prüfung, ob Name in adminId enthalten ist
             authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN")); //Wenn Ja, wird die Rolle Admin zugewiesen
         }
-        else if (("AchilovMirzojafar".equals(originalUser.getAttribute("login")))) {
+        else if (("".equals(originalUser.getAttribute("id")))) {
             authorities.add(new SimpleGrantedAuthority("ROLE_BETREUER"));
         }
 
-            return new DefaultOAuth2User(authorities, originalUser.getAttributes(), "login");
+            return new DefaultOAuth2User(authorities, originalUser.getAttributes(), "id");
         }
     }

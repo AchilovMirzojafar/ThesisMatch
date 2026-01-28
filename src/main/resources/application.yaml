@@ -9,4 +9,4 @@ spring:
             scope:
               - read:public_repo
 security:
-  admins: MohamedChallou,Marwanakov
+  admins: 116162742,147902436,115821857

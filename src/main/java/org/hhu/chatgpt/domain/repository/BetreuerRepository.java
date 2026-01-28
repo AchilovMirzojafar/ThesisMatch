@@ -13,11 +13,11 @@ import java.util.concurrent.ConcurrentHashMap;
 public class BetreuerRepository {
 
     // später: DB, jetzt: In-Memory
-    private final Map<String, Betreuer> storage = new ConcurrentHashMap<>();
+    private final Map<Integer, Betreuer> storage = new ConcurrentHashMap<>();
 
     public BetreuerRepository() {
         for (Betreuer b : BetreuerDummyData.getBetreuerListe()) {
-            storage.put(b.getGitHubName(), b);
+            storage.put(b.getFachId(), b);
         }
     }
 
@@ -25,16 +25,16 @@ public class BetreuerRepository {
         return new ArrayList<>(storage.values());
     }
 
-    public Betreuer findByLogin(String login) {
-        return storage.get(login);
+    public Betreuer findById(Integer id) {
+        return storage.get(id);
     }
 
     public boolean save(Betreuer betreuer) {
-        storage.put(betreuer.getGitHubName(), betreuer);
+        storage.put(betreuer.getFachId(), betreuer);
         return true;
     }
 
-    public boolean deleteByLogin(String login) {
-        return storage.remove(login) != null;
+    public boolean deleteById(Integer id){
+        return storage.remove(id) != null;
     }
 }

@@ -19,8 +19,8 @@ public class BetreuerReadService {
         return repository.findAll();
     }
 
-    public Betreuer findProfile(String login) {
-        return repository.findByLogin(login);
+    public Betreuer findProfile(Integer id) {
+        return repository.findById(id);
     }
 
     public List<Betreuer> getGesuchteName(String name, String tag) {

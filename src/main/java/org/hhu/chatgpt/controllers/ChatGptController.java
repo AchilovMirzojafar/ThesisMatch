@@ -37,9 +37,9 @@ public class ChatGptController {
     @GetMapping("/home")
     public String home(OAuth2AuthenticationToken auth) {
         OAuth2User user = auth.getPrincipal();
-        String login = user.getAttribute("login");
+        Integer id = user.getAttribute("id");
         System.out.println(user);
-        System.out.println(login);
+        System.out.println(id);
         return "student/home";
     }
 

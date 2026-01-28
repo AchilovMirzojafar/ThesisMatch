@@ -15,7 +15,7 @@ public class BetreuerWriteService {
     }
 
     public boolean create(Betreuer b) {
-        return repository.findByLogin(b.getGitHubName()) == null
+        return repository.findById(b.getFachId()) == null
                 && repository.save(b);
     }
 
@@ -23,8 +23,8 @@ public class BetreuerWriteService {
         repository.save(updated);
     }
 
-    public boolean deleteByLogin(String login) {
-        return repository.deleteByLogin(login);
+    public boolean deleteById(Integer id) {
+        return repository.deleteById(id);
     }
 
 
