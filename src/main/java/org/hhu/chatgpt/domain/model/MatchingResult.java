@@ -1,7 +1,5 @@
 package org.hhu.chatgpt.domain.model;
 
-import org.hhu.chatgpt.domain.model.betreuer.Betreuer;
-
 public class MatchingResult {
 
     private Thema thema;
