@@ -19,6 +19,15 @@ repositories {
 }
 
 dependencies {
+    implementation 'org.flywaydb:flyway-core' // für Datenbank-Migration-Script
+    implementation 'org.springframework.boot:spring-boot-starter-data-jdbc' // für Spring Data JDBC
+    implementation "org.flywaydb:flyway-database-postgresql"
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    runtimeOnly 'org.postgresql:postgresql'
+
+    testImplementation 'com.tngtech.archunit:archunit-junit5-engine:0.22.0' // zum testen der Onion-Architektur
+    runtimeOnly  "com.h2database:h2" // Testdatenbank für Spring Data JDBC Tests
+
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-web'
