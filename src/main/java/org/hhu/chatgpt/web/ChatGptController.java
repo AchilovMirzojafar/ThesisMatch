@@ -1,4 +1,4 @@
-package org.hhu.chatgpt.controllers;
+package org.hhu.chatgpt.web;
 
 import java.util.List;
 
@@ -6,9 +6,9 @@ import org.hhu.chatgpt.application.applicationservice.BetreuerReadService;
 import org.hhu.chatgpt.domain.model.Matching;
 import org.hhu.chatgpt.domain.model.MatchingResult;
 import org.hhu.chatgpt.domain.model.Thema;
-import org.hhu.chatgpt.domain.model.betreuer.Betreuer;
-import org.hhu.chatgpt.domain.service.studentService.MatchingService;
-import org.hhu.chatgpt.domain.service.studentService.ThemaService;
+import org.hhu.chatgpt.domain.model.Betreuer;
+import org.hhu.chatgpt.application.applicationservice.MatchingService;
+import org.hhu.chatgpt.application.applicationservice.ThemaService;
 import org.hhu.chatgpt.dummydata.MatchingDummyData;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;

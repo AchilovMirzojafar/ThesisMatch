@@ -1,8 +1,8 @@
-package org.hhu.chatgpt.controllers;
+package org.hhu.chatgpt.web;
 
 import jakarta.validation.Valid;
 import org.hhu.chatgpt.config.annotations.AdminOnly;
-import org.hhu.chatgpt.domain.model.betreuer.Betreuer;
+import org.hhu.chatgpt.domain.model.Betreuer;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,6 +17,7 @@ import org.hhu.chatgpt.application.applicationservice.BetreuerWriteService;
 import org.hhu.chatgpt.application.applicationservice.BetreuerReadService;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Controller
 public class AdminController {
@@ -54,22 +55,21 @@ public class AdminController {
             return "admin/admin";
         }
 
-        List<String> tagList = (tags == null || tags.isBlank())
-                ? List.of()
+        Set<String> tagList = (tags == null || tags.isBlank())
+                ? Set.of()
                 : Arrays.stream(tags.split(","))
                 .map(String::trim)
                 .filter(s -> !s.isBlank())
-                .toList();
+                .collect(Collectors.toSet());
 
         Betreuer b = new Betreuer(
+                betreuer.getFachId(),
                 betreuer.getTitel(),
                 betreuer.getFirstName(),
                 betreuer.getLastName(),
                 betreuer.getEmail(),
                 betreuer.getPhone(),
-                betreuer.getFachId(),
                 tagList,
-                List.of(),
                 Set.of()
         );
 
@@ -85,22 +85,23 @@ public class AdminController {
             return "admin/admin";
         }
 
-           ra.addFlashAttribute("message", "Betreuer erstellt.");
+        //   ra.addFlashAttribute("message", created ? "Betreuer erstellt." : "Betreuer  bereits vorhanden.");
         return "redirect:/admin";
     }
 
     @GetMapping("/admin/edit")
     @AdminOnly
     public String updateBetreuer(@RequestParam("id") Integer id, Model model) {
-        Betreuer betreuer = betreuerReadService.findProfile(id);
-        if (betreuer == null) {
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND,
-                    "Profil ist als Betreuer nicht gefunden. Bitte wenden Sie sich an den Administrator.");
-        }
+        Optional<Betreuer> optionalBetreuer = Optional.ofNullable(betreuerReadService.findProfile(id)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "Profil ist als Betreuer nicht gefunden. Bitte wenden Sie sich an den Administrator."
+                )));
 
-        model.addAttribute("betreuer", betreuer);  //
-        model.addAttribute("allTags", betreuer.getTags());
+            Betreuer betreuer = optionalBetreuer.get();
+            model.addAttribute("betreuer", betreuer);
+            model.addAttribute("allTags", betreuer.getTags());
+
         return "admin/edit";
     }
 
@@ -126,7 +127,7 @@ public class AdminController {
                     .forEach(result::add);
         }
 
-        betreuer.setTags(new ArrayList<>(result));
+        betreuer.setTags(new HashSet<>(result));
 
         betreuerWriteService.updateProfile(betreuer);
         return "redirect:/admin";
