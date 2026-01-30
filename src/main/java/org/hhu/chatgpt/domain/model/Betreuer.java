@@ -1,12 +1,15 @@
-package org.hhu.chatgpt.domain.model.betreuer;
+package org.hhu.chatgpt.domain.model;
 
 import jakarta.validation.constraints.*;
-import org.hhu.chatgpt.domain.model.Thema;
 import org.hhu.chatgpt.domain.model.files.File;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.MappedCollection;
+import org.springframework.data.relational.core.mapping.Table;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
 
 public class Betreuer {
     @NotNull(message = "Darf nicht leer sein!")
@@ -27,21 +30,23 @@ public class Betreuer {
     @Pattern(regexp = "^[0-9+\\-\\s]{6,20}$",
             message = "Ungültiges Telefonnummernformat")
     private  String phone;
-    private  List<String> tags;
-    private  List<File> files;
+
+    private  Set<String> tags;
+    //private  Set<File> files;
+
     private  Set<Thema> themenSet;
 
 
 
 
-    public Betreuer(String titel,
+    public Betreuer(Integer fachId,
+                    String titel,
                     String firstName,
                     String lastName,
                     String email,
                     String phone,
-                    Integer fachId,
-                    List<String> tags,
-                    List<File> files,
+                    Set<String> tags,
+                    //List<File> files,
                     Set<Thema> themenSet
 
     ) {
@@ -51,8 +56,8 @@ public class Betreuer {
         this.email = email;
         this.phone = phone;
         this.fachId = fachId;
-        this.tags = tags != null ? List.copyOf(tags) : List.of();
-        this.files = files != null ? List.copyOf(files) : List.of();
+        this.tags = tags != null ? Set.copyOf(tags) : Set.of();
+        //this.files = files != null ? List.copyOf(files) : List.of();
         this.themenSet = themenSet;
     }
 
@@ -64,15 +69,14 @@ public class Betreuer {
     public String getEmail() { return email; }
     public String getPhone() { return phone; }
     public Integer getFachId() { return fachId; }
-    public List<String> getTags() { return tags; }
-    public List<File> getFiles() { return files; }
+    public Set<String> getTags() { return tags; }
+    //public Set<File> getFiles() { return files; }
     public Set<Thema> getThemenSet() {return themenSet;}
 
     public void setThemenSet(Set<Thema> themenSet) { this.themenSet = (themenSet == null) ? new HashSet<>() : new HashSet<>(themenSet);}
     public void setTitel(String titel) { this.titel = titel; }
     public void setFachId(Integer gitHubId) {this.fachId = gitHubId;}
-    public void setFiles(List<File> files) { this.files = files; }
-    public void setTags(List<String> tags) { this.tags = tags; }
+    public void setTags(Set<String> tags) { this.tags = tags; }
     public void setPhone(String phone){ this.phone = phone; }
     public void setEmail(String email) { this.email = email; }
     public void setLastName(String lastName) { this.lastName = lastName; }

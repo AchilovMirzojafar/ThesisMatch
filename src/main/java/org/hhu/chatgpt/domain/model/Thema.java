@@ -1,16 +1,18 @@
 package org.hhu.chatgpt.domain.model;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class Thema {
 
     private String title;
     private String description;
 
-    private List<String> tags = new ArrayList<>();
-    private List<String> requirements = new ArrayList<>();
-    private String tagInput;
+    private Set<String> tags = new HashSet<>();
+    private Set<String> requirements = new HashSet<>();
+
 
     private String betreuerName;
 
@@ -19,8 +21,8 @@ public class Thema {
 
     public Thema(String title,
                  String description,
-                 List<String> tags,
-                 List<String> requirements,
+                 Set<String> tags,
+                 Set<String> requirements,
                  String betreuerName) {
 
         this.title = title;
@@ -32,10 +34,10 @@ public class Thema {
 
     public String getTitle() { return title; }
     public String getDescription() { return description; }
-    public List<String> getTags() { return tags; }
-    public List<String> getRequirements() { return requirements; }
+    public Set<String> getTags() { return tags; }
+    public Set<String> getRequirements() { return requirements; }
     public String getBetreuerName() { return betreuerName; }
-    public String getTagInput() { return tagInput;}
+
 
     public void setTitle(String title) {
         this.title = title;
@@ -45,17 +47,14 @@ public class Thema {
         this.description = description;
     }
 
-    public void setTags(List<String> tags) {
-        this.tags = (tags == null) ? new ArrayList<>() : new ArrayList<>(tags);
+    public void setTags(Set<String> tags) {
+        this.tags = (tags == null) ? new HashSet<>() : new HashSet<>(tags);
     }
 
     public void setRequirements(List<String> requirements) {
-        this.requirements = (requirements == null) ? new ArrayList<>() : new ArrayList<>(requirements);
+        this.requirements = (requirements == null) ? new HashSet<>() : new HashSet<>(requirements);
     }
 
-    public void setTagInput(String tagInput) {
-        this.tagInput = tagInput;
-    }
 
     public void setBetreuerName(String betreuerName) {
         this.betreuerName = betreuerName;
