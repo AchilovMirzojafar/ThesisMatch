@@ -1,12 +1,13 @@
 package org.hhu.chatgpt.dummydata;
 
-import org.hhu.chatgpt.domain.model.betreuer.Betreuer;
+import org.hhu.chatgpt.domain.model.Betreuer;
 import org.hhu.chatgpt.domain.model.files.File;
 import org.hhu.chatgpt.domain.model.files.FileType;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class BetreuerDummyData {
 
@@ -42,39 +43,38 @@ public class BetreuerDummyData {
                 FileType.ZIP
         );
 
+
+
         Betreuer betreuer1 = new Betreuer(
+                116162742,
                 "Prof.",
                 "Mirzojafar",
                 "Achilov",
                 "jafarachilov@gmail.com",
                 "+49 17671984372",
-                116162742,
-                List.of("Compilerbau", "Formale Methoden", "Theoretische Informatik"),
-                List.of(leitfadenMarkdown),
+                Set.of("Compilerbau", "Formale Methoden", "Theoretische Informatik"),
                 new HashSet<>()
                 );
 
         Betreuer betreuer2 = new Betreuer(
+                115821857,
                 "Prof.",
                 "Marwan",
                 "Alkhoury",
                 "marwanakov@hhu.de",
                 "+49 211 654321",
-                115821857,
-                List.of("Webentwicklung", "Spring", "Datenbanken"),
-                List.of(exposeVorlagePdf),
+                Set.of("Webentwicklung", "Spring", "Datenbanken"),
                 new HashSet<>()
                 );
 
         Betreuer betreuer3 = new Betreuer(
+                147902436,
                 "Prof.",
                 "Muhammad",
                 "Challou",
                 "muhammad.challou@hhu.de",
                 "+49 211 987654",
-                147902436,
-                List.of("KI", "Machine Learning", "Data Science"),
-                List.of(materialZip),
+                Set.of("KI", "Machine Learning", "Data Science"),
                 new HashSet<>()
                 );
 

@@ -1,6 +1,7 @@
 package org.hhu.chatgpt.dummydata;
 
 import java.util.List;
+import java.util.Set;
 
 import org.hhu.chatgpt.domain.model.Thema;
 
@@ -16,32 +17,32 @@ public class ThemaDummyData {
         new Thema(
             "Webplattform für Themenvergabe",
             "Bachelorarbeit im Bereich Webentwicklung",
-            List.of("Web"),
-            List.of("Programmierung"),
+            Set.of("Web"),
+            Set.of("Programmierung"),
             "Prof. Marwan Alkhoury"
         ),
 
         new Thema(
             "KI-gestützte Empfehlungssysteme",
             "Bachelorarbeit im Bereich KI",
-            List.of("KI"),
-            List.of("Machine Learning"),
+            Set.of("KI"),
+            Set.of("Machine Learning"),
             "Prof. Muhammad Challou"
         ),
 
         new Thema(
             "Datenbanken SQL mit JAVA",
             "Bachelorarbeit im Bereich DB",
-            List.of("Datenbank"),
-            List.of("Datenbanken", "Programmierung"),
+            Set.of("Datenbank"),
+            Set.of("Datenbanken", "Programmierung"),
             "Prof. Mirzojafar Achilov"
         ),
 
         new Thema(
             "Computer Netwerk Entwicklung",
             "HTTP mit HTML und Netwerk",
-            List.of("Netzwerk"),
-            List.of("Computernetzwerke"),
+            Set.of("Netzwerk"),
+            Set.of("Computernetzwerke"),
             "Prof. John Müller"
         )
     );
