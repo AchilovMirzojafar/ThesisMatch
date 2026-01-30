@@ -1,4 +1,4 @@
-package org.hhu.chatgpt.domain.service.studentService;
+package org.hhu.chatgpt.application.applicationservice;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 
 import org.hhu.chatgpt.domain.model.MatchingResult;
 import org.hhu.chatgpt.domain.model.Thema;
-import org.hhu.chatgpt.domain.model.betreuer.Betreuer;
+import org.hhu.chatgpt.domain.model.Betreuer;
 import org.hhu.chatgpt.dummydata.BetreuerDummyData;
 import org.hhu.chatgpt.dummydata.ThemaDummyData;
 import org.springframework.stereotype.Service;
@@ -82,7 +82,7 @@ public class MatchingService {
                         if (prof.getTags() != null)
                                 allInterestTags.addAll(prof.getTags());
 
-                        List<String> reqs = thema.getRequirements() == null ? List.of() : thema.getRequirements();
+                        Set<String> reqs = thema.getRequirements() == null ? Set.of() : thema.getRequirements();
                         int totalRequirements = reqs.size();
 
                         int matchedRequirements = (int) reqs.stream()

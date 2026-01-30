@@ -1,9 +1,10 @@
 package org.hhu.chatgpt.application.applicationservice;
 
-import org.hhu.chatgpt.domain.model.betreuer.Betreuer;
-import org.hhu.chatgpt.domain.repository.BetreuerRepository;
+import org.hhu.chatgpt.domain.model.Betreuer;
+import org.hhu.chatgpt.application.applicationservice.repository.BetreuerRepository;
 import org.springframework.stereotype.Service;
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -19,8 +20,8 @@ public class BetreuerReadService {
         return repository.findAll();
     }
 
-    public Betreuer findProfile(Integer id) {
-        return repository.findById(id);
+    public Optional<Betreuer> findProfile(Integer id) {
+        return repository.findByFachId(id);
     }
 
     public List<Betreuer> getGesuchteName(String name, String tag) {

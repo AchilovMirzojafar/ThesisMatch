@@ -1,8 +1,10 @@
 package org.hhu.chatgpt.application.applicationservice;
 
-import org.hhu.chatgpt.domain.model.betreuer.Betreuer;
-import org.hhu.chatgpt.domain.repository.BetreuerRepository;
+import org.hhu.chatgpt.domain.model.Betreuer;
+import org.hhu.chatgpt.application.applicationservice.repository.BetreuerRepository;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 
 @Service
@@ -15,8 +17,13 @@ public class BetreuerWriteService {
     }
 
     public boolean create(Betreuer b) {
-        return repository.findById(b.getFachId()) == null
-                && repository.save(b);
+        Optional<Betreuer> optionalBetreuer = repository.findByFachId(b.getFachId());
+        if (optionalBetreuer.isEmpty()){
+            Betreuer betreuer = optionalBetreuer.get();
+            repository.save(betreuer);
+            return true;
+        }
+        return false;
     }
 
     public void updateProfile(Betreuer updated) {
@@ -24,7 +31,13 @@ public class BetreuerWriteService {
     }
 
     public boolean deleteById(Integer id) {
-        return repository.deleteById(id);
+        Optional<Betreuer> optionalBetreuer = repository.findByFachId(id);
+        if (optionalBetreuer.isEmpty()){
+            Betreuer betreuer = optionalBetreuer.get();
+            repository.delete(betreuer);
+            return true;
+        }
+        return false;
     }
 
 

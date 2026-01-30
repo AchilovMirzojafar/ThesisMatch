@@ -1,4 +1,4 @@
-package org.hhu.chatgpt.domain.service.studentService;
+package org.hhu.chatgpt.application.applicationservice;
 
 import java.util.List;
 
