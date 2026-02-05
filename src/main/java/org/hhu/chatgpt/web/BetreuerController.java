@@ -18,8 +18,8 @@ import org.hhu.chatgpt.application.applicationservice.BetreuerWriteService;
 import org.hhu.chatgpt.application.applicationservice.BetreuerReadService;
 
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Controller
 @AdminOrBetreuerOnly
@@ -89,7 +89,6 @@ public class BetreuerController {
         }
 
         betreuer.setFachId(oldBetreuer.getFachId());
-        //betreuer.setFiles(oldBetreuer.getFiles());
         betreuer.setThemenSet(oldBetreuer.getThemenSet());
 
         betreuerWriteService.updateProfile(betreuer);
@@ -104,29 +103,70 @@ public class BetreuerController {
             return "thema/newThema";
         }
 
-        @PostMapping("/newThema")
-        public String createNewThema(@ModelAttribute("thema") Thema thema,
-                @AuthenticationPrincipal OAuth2User user) {
-            Integer id = user.getAttribute("id");
+    @PostMapping("/newThema")
+    public String createNewThema(@ModelAttribute("thema") Thema thema,
+                                 @RequestParam(name = "tagsCsv", required = false) String tagsCsv,
+                                 @AuthenticationPrincipal OAuth2User user) {
 
-            Optional<Betreuer> optionalBetreuer = Optional.ofNullable(betreuerReadService.findProfile(id)
-                    .orElseThrow(() -> new ResponseStatusException(
-                            HttpStatus.NOT_FOUND,
-                            "Profil ist als Betreuer nicht gefunden. Bitte wenden Sie sich an den Administrator."
-                    )));
+        Integer id = user.getAttribute("id");
 
-            Betreuer betreuer = optionalBetreuer.get();
+        Betreuer betreuer = betreuerReadService.findProfile(id)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "Profil ist als Betreuer nicht gefunden. Bitte wenden Sie sich an den Administrator."
+                ));
 
-            if (thema.getRequirements() == null) {
-                thema.setRequirements(List.of());
-            }
+        // requirements: never null
+        if (thema.getRequirements() == null) {
+            thema.setRequirements(Set.of());
+        }
 
-            betreuer.getThemenSet().add(thema);
+        // tags from CSV -> Set<String>
+        Set<String> tags = parseCsvToSet(tagsCsv);
+        thema.setTags(tags);
 
-            betreuerRepository.save(betreuer);
+        // ensure betreuer.themenSet is initialized and mutable
+        if (betreuer.getThemenSet() == null) {
+            betreuer.setThemenSet(new HashSet<>());
+        }
 
+        betreuer.getThemenSet().add(thema);
+        betreuerRepository.save(betreuer);
+
+        return "redirect:/profil";
+    }
+
+    private Set<String> parseCsvToSet(String csv) {
+        if (csv == null || csv.isBlank()) return Set.of();
+
+        return Arrays.stream(csv.split(","))
+                .map(String::trim)
+                .filter(s -> !s.isBlank())
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+    }
+
+    @PostMapping("/thema/{themaId}/delete")
+    public String deleteThema(@PathVariable UUID themaId,
+                              @AuthenticationPrincipal OAuth2User user) {
+
+        Integer fachId = user.getAttribute("id");
+
+        Betreuer betreuer = betreuerReadService.findProfile(fachId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        if (betreuer.getThemenSet() == null) {
             return "redirect:/profil";
         }
 
+        boolean removed = betreuer.getThemenSet().removeIf(t -> themaId.equals(t.getId()));
+
+        if (removed) {
+            betreuerRepository.save(betreuer);
+        }
+
+        return "redirect:/profil";
     }
+
+
+}
 

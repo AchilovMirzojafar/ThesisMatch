@@ -5,7 +5,6 @@ import java.util.List;
 import org.hhu.chatgpt.application.applicationservice.BetreuerReadService;
 import org.hhu.chatgpt.domain.model.Matching;
 import org.hhu.chatgpt.domain.model.MatchingResult;
-import org.hhu.chatgpt.domain.model.Thema;
 import org.hhu.chatgpt.domain.model.Betreuer;
 import org.hhu.chatgpt.application.applicationservice.MatchingService;
 import org.hhu.chatgpt.application.applicationservice.ThemaService;
@@ -53,7 +52,7 @@ public class ChatGptController {
             @RequestParam(name = "requirement", required = false) String requirement,
             Model model) {
 
-        List<Thema> filtered = themaService.getGefilterteThemen(search, tag, requirement);
+        List<ThemaListItem> filtered = themaService.getGefilterteThemen(search, tag, requirement);
 
         model.addAttribute("themenListe", filtered);
         model.addAttribute("resultCount", filtered.size());
@@ -63,6 +62,7 @@ public class ChatGptController {
 
         return "student/themen";
     }
+
 
     @GetMapping("/betreuende")
     public String betreuende(

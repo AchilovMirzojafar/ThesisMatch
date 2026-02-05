@@ -35,8 +35,7 @@
 
                 <div class="col-12 col-md-6">
                     <label class="form-label fw-semibold">Tags</label>
-                    <!-- если хотите хранить в Thema список tags, удобнее иметь отдельное поле tagInput -->
-                    <input type="text" th:field="*{tagInput}" class="form-control" placeholder="z.B. Compilerbau, Rust">
+                    <input type="text" name="tagsCsv" class="form-control" placeholder="z.B. Compilerbau, Rust">
                 </div>
 
                 <div class="col-12 col-md-6">
@@ -66,6 +65,7 @@
                 </div>
 
             </form>
+
 
         </div>
     </div>
