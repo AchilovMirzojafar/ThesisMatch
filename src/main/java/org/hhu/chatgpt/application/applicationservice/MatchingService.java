@@ -1,124 +1,99 @@
 package org.hhu.chatgpt.application.applicationservice;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
+import org.hhu.chatgpt.domain.model.Betreuer;
 import org.hhu.chatgpt.domain.model.MatchingResult;
 import org.hhu.chatgpt.domain.model.Thema;
-import org.hhu.chatgpt.domain.model.Betreuer;
 import org.hhu.chatgpt.dummydata.BetreuerDummyData;
-import org.hhu.chatgpt.dummydata.ThemaDummyData;
 import org.springframework.stereotype.Service;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class MatchingService {
 
         public List<MatchingResult> getMatchingResults(
-                        List<String> selectedKurse,
-                        List<String> selectedInteressen) {
+                List<String> selectedKurse,
+                List<String> selectedInteressen) {
+
+                Set<String> normalizedKurse = normalize(selectedKurse);
+                Set<String> normalizedInteressen = normalize(selectedInteressen);
+
+                if (normalizedKurse.isEmpty() && normalizedInteressen.isEmpty()) {
+                        return List.of();
+                }
 
                 List<MatchingResult> results = new ArrayList<>();
 
-                Set<String> normalizedKurse = selectedKurse == null
-                                ? Set.of()
-                                : selectedKurse.stream()
-                                                .map(String::trim)
-                                                .map(s -> s.toLowerCase().replace("-", " "))
-                                                .collect(Collectors.toSet());
-
-                Set<String> normalizedInteressen = selectedInteressen == null
-                                ? Set.of()
-                                : selectedInteressen.stream()
-                                                .map(String::trim)
-                                                .map(s -> s.toLowerCase().replace("-", " "))
-                                                .collect(Collectors.toSet());
-
-                if (normalizedKurse.isEmpty() && normalizedInteressen.isEmpty()) {
-                        return results;
-                }
-
-                List<Thema> themen = ThemaDummyData.getAlleThemen();
+                // Источник правды: агрегат Betreuer (каждый Betreuer владеет своими Themen)
                 List<Betreuer> betreuendeListe = BetreuerDummyData.getBetreuerListe();
 
-                for (Thema thema : themen) {
+                for (Betreuer prof : betreuendeListe) {
 
-                        // find matching professor
-                        String betreuerName = thema.getBetreuerName();
-                        Betreuer prof = null;
+                        Set<Thema> themen = prof.getThemenSet() == null ? Set.of() : prof.getThemenSet();
+                        if (themen.isEmpty()) continue;
 
-                        if (betreuerName != null) {
-                                String t = betreuerName.toLowerCase()
-                                                .replace(".", " ")
-                                                .replace(",", " ")
-                                                .replace("-", " ")
-                                                .replaceAll("\\s+", " ")
-                                                .trim();
+                        for (Thema thema : themen) {
 
-                                prof = betreuendeListe.stream()
-                                                .filter(b -> {
-                                                        String first = b.getFirstName() == null ? ""
-                                                                        : b.getFirstName().toLowerCase().trim();
-                                                        String last = b.getLastName() == null ? ""
-                                                                        : b.getLastName().toLowerCase().trim();
+                                Set<String> themaTags = thema.getTags() == null ? Set.of() : thema.getTags();
+                                Set<String> profTags = prof.getTags() == null ? Set.of() : prof.getTags();
 
-                                                        boolean lastMatch = !last.isBlank() && t.contains(last);
-                                                        boolean firstMatch = !first.isBlank() && t.contains(first);
+                                Set<String> allInterestTags = new HashSet<>();
+                                allInterestTags.addAll(themaTags);
+                                allInterestTags.addAll(profTags);
 
-                                                        return lastMatch || firstMatch;
-                                                })
-                                                .findFirst()
-                                                .orElse(null);
-                        }
+                                Set<String> reqs = thema.getRequirements() == null ? Set.of() : thema.getRequirements();
+                                int totalRequirements = reqs.size();
 
-                        if (prof == null)
-                                continue;
-
-                        Set<String> allInterestTags = new java.util.HashSet<>();
-
-                        if (thema.getTags() != null)
-                                allInterestTags.addAll(thema.getTags());
-                        if (prof.getTags() != null)
-                                allInterestTags.addAll(prof.getTags());
-
-                        Set<String> reqs = thema.getRequirements() == null ? Set.of() : thema.getRequirements();
-                        int totalRequirements = reqs.size();
-
-                        int matchedRequirements = (int) reqs.stream()
-                                        .map(String::trim)
-                                        .map(s -> s.toLowerCase().replace("-", " "))
+                                int matchedRequirements = (int) reqs.stream()
+                                        .map(MatchingService::normalizeOne)
                                         .filter(normalizedKurse::contains)
                                         .count();
 
-                        int totalTags = allInterestTags.size();
+                                int totalTags = allInterestTags.size();
 
-                        int matchedTags = (int) allInterestTags.stream()
-                                        .map(String::trim)
-                                        .map(s -> s.toLowerCase().replace("-", " "))
+                                int matchedTags = (int) allInterestTags.stream()
+                                        .map(MatchingService::normalizeOne)
                                         .filter(normalizedInteressen::contains)
                                         .count();
-                                        
-                        int score = 0;
-                        int total = totalRequirements + totalTags;
 
-                        if (total > 0) {
-                                score = (int) Math.round((matchedRequirements + matchedTags) * 100.0 / total);
-                        }
+                                int total = totalRequirements + totalTags;
+                                int score = (total == 0)
+                                        ? 0
+                                        : (int) Math.round((matchedRequirements + matchedTags) * 100.0 / total);
 
-                        if (matchedRequirements > 0 || matchedTags > 0) {
-                                results.add(new MatchingResult(
+                                if (matchedRequirements > 0 || matchedTags > 0) {
+                                        results.add(new MatchingResult(
                                                 thema,
                                                 prof,
                                                 matchedRequirements,
                                                 totalRequirements,
                                                 matchedTags,
                                                 totalTags,
-                                                score));
+                                                score
+                                        ));
+                                }
                         }
                 }
-                
+
                 results.sort((a, b) -> Integer.compare(b.getScore(), a.getScore()));
                 return results;
+        }
+
+        private static Set<String> normalize(List<String> values) {
+                if (values == null) return Set.of();
+                return values.stream()
+                        .filter(Objects::nonNull)
+                        .map(MatchingService::normalizeOne)
+                        .filter(s -> !s.isBlank())
+                        .collect(Collectors.toSet());
+        }
+
+        private static String normalizeOne(String s) {
+                if (s == null) return "";
+                return s.trim()
+                        .toLowerCase()
+                        .replace("-", " ")
+                        .replaceAll("\\s+", " ");
         }
 }
