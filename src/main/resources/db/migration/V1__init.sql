@@ -13,21 +13,23 @@ CREATE TABLE betreuer
 
     email VARCHAR(50),
 
-    phone VARCHAR(12)
+    phone VARCHAR(12),
+
+    tags VARCHAR(200)
 
 );
 
 CREATE TABLE betreuer_tag
 (
     betreuer INTEGER NOT NULL REFERENCES betreuer(id) ON DELETE CASCADE,
-    tag VARCHAR(100) NOT NULL,
+    tag VARCHAR(50) NOT NULL,
 
     PRIMARY KEY (betreuer, tag)
 );
 
 CREATE TABLE thema
 (
-    id SERIAL PRIMARY KEY,
+    id UUID PRIMARY KEY,
 
     title VARCHAR(50),
     description VARCHAR(300),
@@ -42,7 +44,7 @@ CREATE TABLE thema
 
 CREATE TABLE thema_tag
 (
-    thema INTEGER NOT NULL REFERENCES thema(id) ON DELETE CASCADE,
+    thema UUID NOT NULL REFERENCES thema(id) ON DELETE CASCADE,
     tag VARCHAR(100) NOT NULL,
 
     PRIMARY KEY (thema, tag)
@@ -50,7 +52,7 @@ CREATE TABLE thema_tag
 
 CREATE TABLE thema_requirement
 (
-    thema INTEGER NOT NULL REFERENCES thema(id) ON DELETE CASCADE,
+    thema UUID NOT NULL REFERENCES thema(id) ON DELETE CASCADE,
     requirement VARCHAR(200) NOT NULL,
 
     PRIMARY KEY (thema, requirement)
