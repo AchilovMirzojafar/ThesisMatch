@@ -9,7 +9,6 @@ public interface BetreuerRepository {
 
     void save(Betreuer betreuer);
 
-
     void delete(Betreuer betreuer);
 
      List<Betreuer> findAll();

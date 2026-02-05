@@ -17,27 +17,24 @@ public class BetreuerWriteService {
     }
 
     public boolean create(Betreuer b) {
-        Optional<Betreuer> optionalBetreuer = repository.findByFachId(b.getFachId());
-        if (optionalBetreuer.isEmpty()){
-            Betreuer betreuer = optionalBetreuer.get();
-            repository.save(betreuer);
-            return true;
+        Optional<Betreuer> existing = repository.findByFachId(b.getFachId());
+        if (existing.isPresent()) {
+            return false;
         }
-        return false;
+        repository.save(b);
+        return true;
     }
+
 
     public void updateProfile(Betreuer updated) {
         repository.save(updated);
     }
 
-    public boolean deleteById(Integer id) {
-        Optional<Betreuer> optionalBetreuer = repository.findByFachId(id);
-        if (optionalBetreuer.isEmpty()){
-            Betreuer betreuer = optionalBetreuer.get();
-            repository.delete(betreuer);
-            return true;
-        }
-        return false;
+
+    public boolean deleteById(Integer fachId) {
+        return repository.findByFachId(fachId)
+                .map(betreuer -> { repository.delete(betreuer); return true; })
+                .orElse(false);
     }
 
 

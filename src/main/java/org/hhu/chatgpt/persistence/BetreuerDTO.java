@@ -1,15 +1,104 @@
 package org.hhu.chatgpt.persistence;
 
-import jakarta.validation.constraints.*;
-import org.hhu.chatgpt.domain.model.Thema;
-import org.hhu.chatgpt.domain.model.files.File;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.MappedCollection;
 import org.springframework.data.relational.core.mapping.Table;
 
-import java.util.List;
+import java.util.HashSet;
 import java.util.Set;
 
 @Table("betreuer")
-public record BetreuerDTO(@Id Integer id, Integer fachId, String titel, String firstName, String lastName, String email, String phone, Set<String> tags, Set<ThemaDTO> themaSet) {
+public class BetreuerDTO {
+
+    @Id
+    private Integer id;
+
+    private Integer fachId;
+    private String titel;
+    @Column("first_name")
+    private String firstName;
+    @Column("last_name")
+    private String lastName;
+    private String email;
+    private String phone;
+
+    @MappedCollection(idColumn = "betreuer")
+    private Set<BetreuerTagDTO> tags = new HashSet<>();
+
+    @MappedCollection(idColumn = "betreuer") // FK für thema: betreuer
+    private Set<ThemaDTO> themenSet = new HashSet<>();
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Integer getFachId() {
+        return fachId;
+    }
+
+    public void setFachId(Integer fachId) {
+        this.fachId = fachId;
+    }
+
+    public String getTitel() {
+        return titel;
+    }
+
+    public void setTitel(String titel) {
+        this.titel = titel;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public Set<BetreuerTagDTO> getTags() {
+        return tags;
+    }
+
+    public void setTags(Set<BetreuerTagDTO> tags) {
+        this.tags = tags;
+    }
+
+    public Set<ThemaDTO> getThemenSet() {
+        return themenSet;
+    }
+
+    public void setThemenSet(Set<ThemaDTO> themenSet) {
+        this.themenSet = themenSet;
+    }
 }
 
