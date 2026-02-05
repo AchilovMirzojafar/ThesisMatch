@@ -5,7 +5,7 @@ import org.hhu.chatgpt.domain.model.Betreuer;
 import org.hhu.chatgpt.domain.model.Thema;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 @Repository
 public class BetreuerRepositoryImpl implements BetreuerRepository {
 
-    BetreuerDaoRepository betreuerDaoRepository;
+    private final BetreuerDaoRepository betreuerDaoRepository;
 
     public BetreuerRepositoryImpl(BetreuerDaoRepository betreuerDaoRepository) {
         this.betreuerDaoRepository = betreuerDaoRepository;
@@ -22,66 +22,118 @@ public class BetreuerRepositoryImpl implements BetreuerRepository {
 
     @Override
     public void save(Betreuer betreuer) {
-        Integer existingId = betreuerDaoRepository.findByFachId(betreuer.getFachId()).map(BetreuerDTO::id).orElse(null); // Suche den Betreuer mit seiner FachId in der Datenbank, zurück gegeben wird ein DTO. Prüfe, ob das BetreuerDTO eine DatenbankId hat.
-        betreuerDaoRepository.save(toBetreuerDTO(existingId, betreuer));
+        Integer existingId = betreuerDaoRepository.findByFachId(betreuer.getFachId())
+                .map(BetreuerDTO::getId)
+                .orElse(null);
+
+        BetreuerDTO dto = toBetreuerDTO(existingId, betreuer);
+        betreuerDaoRepository.save(dto);
     }
 
     @Override
     public void delete(Betreuer betreuer) {
-        Integer existingId = betreuerDaoRepository.findByFachId(betreuer.getFachId()).map(BetreuerDTO::id).orElse(null); // Suche den Betreuer mit seiner FachId in der Datenbank, zurück gegeben wird ein DTO. Prüfe, ob das BetreuerDTO eine DatenbankId hat.
-        betreuerDaoRepository.delete(toBetreuerDTO(existingId, betreuer));
+        Optional<BetreuerDTO> existing = betreuerDaoRepository.findByFachId(betreuer.getFachId());
+        if (existing.isEmpty()) {
+            return;
+        }
+        betreuerDaoRepository.delete(existing.get());
     }
 
     @Override
-    public List<Betreuer> findAll(){
-        return betreuerDaoRepository.findAll().stream().map(this::toBetreuer).toList();
+    public List<Betreuer> findAll() {
+        return betreuerDaoRepository.findAll().stream()
+                .map(this::toDomainBetreuer)
+                .toList();
     }
 
     @Override
-    public Optional<Betreuer> findByFachId(Integer fachId){
-        return betreuerDaoRepository.findByFachId(fachId).map(this::toBetreuer);
+    public Optional<Betreuer> findByFachId(Integer fachId) {
+        return betreuerDaoRepository.findByFachId(fachId)
+                .map(this::toDomainBetreuer);
     }
 
+    // ---------------- Domain -> Persistence DTO ----------------
 
-   //<---------------- Betreuer -> BetreuerDTO ---------------->
+    private BetreuerDTO toBetreuerDTO(Integer existingId, Betreuer b) {
+        BetreuerDTO dto = new BetreuerDTO();
+        dto.setId(existingId);
 
-    private Set<ThemaDTO> toThemenDTO(Set<Thema> themaSet){
-        return themaSet.stream().map(this::toThemaDTO).collect(Collectors.toSet());
+        dto.setFachId(b.getFachId());
+        dto.setTitel(b.getTitel());
+        dto.setFirstName(b.getFirstName());
+        dto.setLastName(b.getLastName());
+        dto.setEmail(b.getEmail());
+        dto.setPhone(b.getPhone());
+
+        // tags: Set<String> -> Set<BetreuerTagDTO>
+        Set<String> domainTags = (b.getTags() == null) ? Set.of() : b.getTags();
+        dto.setTags(domainTags.stream().map(BetreuerTagDTO::new).collect(Collectors.toSet()));
+
+        // themen: Set<Thema> -> Set<ThemaDTO>
+        Set<Thema> domainThemen = (b.getThemenSet() == null) ? Set.of() : b.getThemenSet();
+        dto.setThemenSet(domainThemen.stream().map(this::toThemaDTO).collect(Collectors.toSet()));
+
+        return dto;
     }
 
-    private ThemaDTO toThemaDTO(Thema thema){
-        return new ThemaDTO(thema.getTitle(), thema.getDescription(), thema.getTags(), thema.getRequirements(), thema.getBetreuerName());
+    private ThemaDTO toThemaDTO(Thema t) {
+        ThemaDTO dto = new ThemaDTO();
+        //UUID einsetzen
+        dto.setId(t.getId());
+
+        dto.setTitle(t.getTitle());
+        dto.setDescription(t.getDescription());
+
+        Set<String> tags = (t.getTags() == null) ? Set.of() : t.getTags();
+        dto.setTags(tags.stream().map(ThemaTagDTO::new).collect(Collectors.toSet()));
+
+        Set<String> reqs = (t.getRequirements() == null) ? Set.of() : t.getRequirements();
+        dto.setRequirements(reqs.stream().map(ThemaRequirementDTO::new).collect(Collectors.toSet()));
+
+        return dto;
     }
 
-    private BetreuerDTO toBetreuerDTO(Integer existingId, Betreuer betreuer){
-        Set<ThemaDTO> themaDtoSet = toThemenDTO(betreuer.getThemenSet());
-        return new BetreuerDTO(existingId, betreuer.getFachId(), betreuer.getTitel(), betreuer.getFirstName(), betreuer.getLastName(), betreuer.getEmail(), betreuer.getPhone(), betreuer.getTags(), themaDtoSet);
+    // ---------------- Persistence DTO -> Domain ----------------
 
-                //String titel, String firstName, String lastName, String email, String phone, List<String> tags, Set<ThemaDTO> themaSet
+    private Betreuer toDomainBetreuer(BetreuerDTO dto) {
+        Set<String> tags = safe(dto.getTags()).stream()
+                .map(BetreuerTagDTO::tag)
+                .collect(Collectors.toSet());
+
+        Set<Thema> themen = safe(dto.getThemenSet()).stream()
+                .map(this::toDomainThema)
+                .collect(Collectors.toSet());
+
+        return new Betreuer(
+                dto.getFachId(),
+                dto.getTitel(),
+                dto.getFirstName(),
+                dto.getLastName(),
+                dto.getEmail(),
+                dto.getPhone(),
+                tags,
+                themen
+        );
     }
 
-    //<---------------- BetreuerDTO -> Betreuer ---------------->
+    private Thema toDomainThema(ThemaDTO dto) {
+        Set<String> tags = safe(dto.getTags()).stream()
+                .map(ThemaTagDTO::tag)
+                .collect(Collectors.toSet());
 
-    private Set<Thema> translateThemen(Set<ThemaDTO> setThemaDto){
-        return setThemaDto.stream().map(this::toThema).collect(Collectors.toSet());
+        Set<String> reqs = safe(dto.getRequirements()).stream()
+                .map(ThemaRequirementDTO::requirement)
+                .collect(Collectors.toSet());
+
+        Thema t = new Thema(dto.getTitle(), dto.getDescription(), tags, reqs);
+
+        t.setId(dto.getId()); // <-- UUID
+
+        return t;
     }
 
-    private Thema toThema(ThemaDTO themaDTO){
-        return new Thema(themaDTO.titel(), themaDTO.description(), themaDTO.tags(), themaDTO.requirements(), themaDTO.betreuerName() );
+    private static <T> Set<T> safe(Set<T> set) {
+        return (set == null) ? new HashSet<>() : set;
     }
-
-    private Betreuer toBetreuer(BetreuerDTO betreuerDTO){
-        Set<Thema> themaSet = translateThemen(betreuerDTO.themaSet());
-        return new Betreuer(betreuerDTO.fachId(), betreuerDTO.titel(), betreuerDTO.firstName(), betreuerDTO.lastName(), betreuerDTO.email(), betreuerDTO.phone(), betreuerDTO.tags(), themaSet);
-    }
-
-//    private String title;
-//    private String description;
-//
-//    private List<String> tags = new ArrayList<>();
-//    private List<String> requirements = new ArrayList<>();
-//    private String tagInput;
-//
-//    private String betreuerName;
-
 }
+
