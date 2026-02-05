@@ -134,8 +134,8 @@
 
                         <p class="text-muted small mb-3">
                             <strong>Voraussetzung:</strong>
-                            <span th:text="${thema.requirements}">
-                                Hinweise zur Arbeit
+                            <span th:text="${thema.requirements != null ? #strings.arrayJoin(thema.requirements.toArray(), ', ') : ''}"></span>
+                            Hinweise zur Arbeit
                             </span>
                         </p>
 

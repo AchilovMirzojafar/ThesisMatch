@@ -1,40 +1,71 @@
 package org.hhu.chatgpt.application.applicationservice;
 
-import java.util.List;
-
+import org.hhu.chatgpt.web.ThemaListItem;
+import org.hhu.chatgpt.application.applicationservice.repository.BetreuerRepository;
+import org.hhu.chatgpt.domain.model.Betreuer;
 import org.hhu.chatgpt.domain.model.Thema;
-import org.hhu.chatgpt.dummydata.ThemaDummyData;
 import org.springframework.stereotype.Service;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Service
 public class ThemaService {
 
-    public List<Thema> getGefilterteThemen(
-            String search,
-            String tag,
-            String requirement) {
+    private final BetreuerRepository betreuerRepository;
 
-        return ThemaDummyData.getAlleThemen().stream()
+    public ThemaService(BetreuerRepository betreuerRepository) {
+        this.betreuerRepository = betreuerRepository;
+    }
+
+    public List<ThemaListItem> getGefilterteThemen(String search, String tag, String requirement) {
+
+        return betreuerRepository.findAll().stream()
+                .flatMap(b -> {
+                    Set<Thema> themen = b.getThemenSet() == null ? Set.of() : b.getThemenSet();
+                    String name = buildName(b);
+                    return themen.stream().map(t -> toItem(t, name));
+                })
 
                 // Title search
-                .filter(t ->
+                .filter(x ->
                         search == null || search.isBlank()
-                                || t.getTitle().toLowerCase().contains(search.toLowerCase())
+                                || x.title().toLowerCase().contains(search.toLowerCase())
                 )
 
                 // Tag filter
-                .filter(t ->
+                .filter(x ->
                         tag == null || tag.isBlank()
-                                || t.getTags().contains(tag)
+                                || (x.tags() != null && x.tags().contains(tag))
                 )
 
                 // Requirement filter
-                .filter(t ->
+                .filter(x ->
                         requirement == null || requirement.isBlank()
-                                || t.getRequirements().contains(requirement)
+                                || (x.requirements() != null && x.requirements().contains(requirement))
                 )
 
                 .toList();
     }
-}
 
+    private ThemaListItem toItem(Thema t, String betreuerName) {
+        Set<String> tags = t.getTags() == null ? Set.of() : t.getTags();
+        Set<String> reqs = t.getRequirements() == null ? Set.of() : t.getRequirements();
+
+        return new ThemaListItem(
+                t.getTitle(),
+                t.getDescription(),
+                tags,
+                reqs,
+                betreuerName
+        );
+    }
+
+    private String buildName(Betreuer b) {
+        String first = b.getFirstName() == null ? "" : b.getFirstName().trim();
+        String last = b.getLastName() == null ? "" : b.getLastName().trim();
+        String full = (first + " " + last).trim();
+        return full.isBlank() ? "Unbekannt" : full;
+    }
+}
