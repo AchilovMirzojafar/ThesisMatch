@@ -8,5 +8,10 @@ spring:
             client-secret: e941c2d52cb6ce2dc0bce7b8ecc194fdbed7ae8a
             scope:
               - read:public_repo
+  datasource:
+    password: iamgroot
+    username: user
+    url: jdbc:postgresql://localhost:5432/postgres
+
 security:
   admins: 116162742,147902436,115821857

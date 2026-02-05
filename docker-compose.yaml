@@ -1,8 +1,6 @@
-version: "3.8"
-
 services:
-  db:
-    image: postgres:latest
+  database:
+    image: postgres:15-alpine
     ports:
       - "5432:5432"
     environment:
