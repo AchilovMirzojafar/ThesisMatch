@@ -1,25 +1,35 @@
 package org.hhu.chatgpt.web;
 
-import jakarta.validation.Valid;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+import org.hhu.chatgpt.application.applicationservice.BetreuerReadService;
+import org.hhu.chatgpt.application.applicationservice.BetreuerWriteService;
+import org.hhu.chatgpt.application.applicationservice.repository.BetreuerRepository;
 import org.hhu.chatgpt.config.annotations.AdminOrBetreuerOnly;
+import org.hhu.chatgpt.domain.model.Betreuer;
+import org.hhu.chatgpt.domain.model.TagCatalog;
 import org.hhu.chatgpt.domain.model.Thema;
 import org.hhu.chatgpt.domain.model.VeranstaltungenListe;
-import org.hhu.chatgpt.domain.model.Betreuer;
-import org.hhu.chatgpt.application.applicationservice.repository.BetreuerRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
-import org.hhu.chatgpt.application.applicationservice.BetreuerWriteService;
-import org.hhu.chatgpt.application.applicationservice.BetreuerReadService;
 
-
-import java.util.*;
-import java.util.stream.Collectors;
+import jakarta.validation.Valid;
 
 @Controller
 @AdminOrBetreuerOnly
@@ -65,7 +75,7 @@ public class BetreuerController {
 
         Betreuer betreuer = optionalBetreuer.get();
         model.addAttribute("betreuer", betreuer);
-        model.addAttribute("allTags", betreuer.getTags());
+        model.addAttribute("allTags", TagCatalog.ALL);
         return "betreuer/edit";
     }
 
@@ -83,8 +93,8 @@ public class BetreuerController {
 
         Betreuer oldBetreuer = optionalBetreuer.get();
 
-        if (bindingResult.hasErrors()) {
-            model.addAttribute("allTags", oldBetreuer.getTags());
+        if (bindingResult.hasErrors()) {    
+            model.addAttribute("allTags", TagCatalog.ALL);
             return "betreuer/edit";
         }
 

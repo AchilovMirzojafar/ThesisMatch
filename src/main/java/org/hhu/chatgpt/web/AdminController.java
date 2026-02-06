@@ -1,6 +1,14 @@
 package org.hhu.chatgpt.web;
 
-import jakarta.validation.Valid;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
+import org.hhu.chatgpt.application.applicationservice.BetreuerReadService;
+import org.hhu.chatgpt.application.applicationservice.BetreuerWriteService;
 import org.hhu.chatgpt.config.annotations.AdminOnly;
 import org.hhu.chatgpt.domain.model.Betreuer;
 import org.springframework.http.HttpStatus;
@@ -13,11 +21,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.hhu.chatgpt.application.applicationservice.BetreuerWriteService;
-import org.hhu.chatgpt.application.applicationservice.BetreuerReadService;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import jakarta.validation.Valid;
 
 @Controller
 public class AdminController {
@@ -46,21 +51,22 @@ public class AdminController {
     public String createBetreuer(
             @Valid @ModelAttribute("betreuer") Betreuer betreuer,
             BindingResult bindingResult,
-            @RequestParam(value = "tags", required = false) String tags,
+            // @RequestParam(value = "tags", required = false) String tags,
             Model model,
             RedirectAttributes ra) {
 
         if (bindingResult.hasErrors()) {
-            model.addAttribute("betreuerListe", betreuerReadService.list());
-            return "admin/admin";
-        }
+    model.addAttribute("betreuer", betreuer); // ensure form object is present
+    model.addAttribute("betreuerListe", betreuerReadService.list());
+    return "admin/admin";
+}
 
-        Set<String> tagList = (tags == null || tags.isBlank())
-                ? Set.of()
-                : Arrays.stream(tags.split(","))
-                .map(String::trim)
-                .filter(s -> !s.isBlank())
-                .collect(Collectors.toSet());
+        // Set<String> tagList = (tags == null || tags.isBlank())
+        //         ? Set.of()
+        //         : Arrays.stream(tags.split(","))
+        //         .map(String::trim)
+        //         .filter(s -> !s.isBlank())
+        //         .collect(Collectors.toSet());
 
         Betreuer b = new Betreuer(
                 betreuer.getFachId(),
@@ -68,22 +74,19 @@ public class AdminController {
                 betreuer.getFirstName(),
                 betreuer.getLastName(),
                 betreuer.getEmail(),
-                betreuer.getPhone(),
-                tagList,
+                null,
+                Set.of(),
                 Set.of()
         );
 
         boolean created = betreuerWriteService.create(b);
 
         if (!created) {
-            bindingResult.rejectValue(
-                    "fachId",
-                    "duplicate",
-                    "GitHub-Login existiert bereits"
-            );
-            model.addAttribute("betreuerListe", betreuerReadService.list());
-            return "admin/admin";
-        }
+    bindingResult.rejectValue("fachId", "duplicate", "GitHub-Login existiert bereits");
+    model.addAttribute("betreuer", betreuer);
+    model.addAttribute("betreuerListe", betreuerReadService.list());
+    return "admin/admin";
+}
 
         //   ra.addFlashAttribute("message", created ? "Betreuer erstellt." : "Betreuer  bereits vorhanden.");
         return "redirect:/admin";
