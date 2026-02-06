@@ -44,7 +44,7 @@
                         <button type="submit" class="btn btn-outline-dark btn-sm w-100">
                             Profilbild hochladen
                         </button>
-                    </form>
+
 
                 </div>
             </div>
@@ -175,7 +175,7 @@
         </div>
     </div>
 
-    <!-- DATEIEN -->
+    <!-- DATEIEN
     <div class="card shadow-sm mt-4">
         <div class="card-body">
 
@@ -216,8 +216,8 @@
 
             <hr>
 
-            <!-- Vorhandene Dateien -->
-            <div th:each="file : ${betreuer.files}" class="mb-2">
+            <-- Vorhandene Dateien -->
+            <!-- <div th:each="file : ${betreuer.files}" class="mb-2">
                 <i class="fa-solid fa-file me-2"></i>
                 <a th:href="@{/files/{id}(id=${file.storedFilename})}"
                    th:text="${file.title}"></a>
@@ -227,7 +227,7 @@
             </div>
 
         </div>
-    </div>
+    </div> --> 
 
 </div>
 

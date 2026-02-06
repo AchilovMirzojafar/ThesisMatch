@@ -1,11 +1,9 @@
 <!DOCTYPE html>
-<html lang="en"
-      xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
     <meta charset="UTF-8">
-    <title>ThesisMatch – Admin</title>
+    <title>ThesisMatch - Admin</title>
 
     <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -16,113 +14,105 @@
 
 <body class="bg-light">
 
-<!-- NAVBAR -->
-<nav class="navbar navbar-expand-lg bg-white shadow-sm px-4">
-    <a class="navbar-brand fw-bold fs-4 text-dark text-decoration-none" th:href="@{/admin}">
-        ThesisMatch
-    </a>
-    <div class="ms-auto d-flex gap-2"
-         sec:authorize="isAuthenticated()">
-        <a th:href="@{/home}" class="btn btn-dark"
-           sec:authorize="hasRole('ADMIN')">Vorschau als Student</a>
-    </div>
-</nav>
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg bg-white shadow-sm px-4">
+        <a class="navbar-brand fw-bold fs-4 text-dark text-decoration-none" th:href="@{/admin}">
+            ThesisMatch
+        </a>
+        <div class="ms-auto d-flex gap-2" sec:authorize="isAuthenticated()">
+            <a th:href="@{/home}" class="btn btn-dark" sec:authorize="hasRole('ADMIN')">Vorschau als Student</a>
+        </div>
+    </nav>
 
-<div class="container-fluid px-4 mt-4" style="max-width: 1000px;">
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="container-fluid px-4 mt-4" style="max-width: 1000px;">
+        <div class="d-flex justify-content-between align-items-center mb-4">
 
-        <!-- Erster Slogan ganz links -->
-        <div class="text-start">
-            <h1 class="display-6 fw-semibold mb-0">
-                ADMIN<br>
-                VERWALTUNG
-            </h1>
+            <!-- Erster Slogan ganz links -->
+            <div class="text-start">
+                <h1 class="display-6 fw-semibold mb-0">
+                    ADMIN<br>
+                    VERWALTUNG
+                </h1>
+            </div>
+
+            <!-- Zweiter Slogan ganz rechts -->
+            <div class="text-end">
+                <p class="fs-5 fw-semibold mb-1">
+                    Willkommen ADMIN 👋
+                </p>
+                <p class="fs-6 mb-0">
+                    Du bist eingeloggt als
+                    <strong sec:authentication="principal.attributes['login']"></strong>
+                </p>
+            </div>
+
         </div>
 
-        <!-- Zweiter Slogan ganz rechts -->
-        <div class="text-end">
-            <p class="fs-5 fw-semibold mb-1">
-                Willkommen ADMIN 👋
-            </p>
-            <p class="fs-6 mb-0">
-                Du bist eingeloggt als
-                <strong sec:authentication="principal.attributes['login']"></strong>
-            </p>
-        </div>
+        <!-- Feedback Nachricht -->
+        <div th:if="${message}" class="alert alert-info" th:text="${message}"></div>
 
-    </div>
+        <!-- Betreuer erstellen -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-body p-3">
+                <h5 class="mb-3">Betreuer hinzufügen</h5>
 
-    <!-- Feedback Nachricht -->
-    <div th:if="${message}" class="alert alert-info" th:text="${message}"></div>
+                <form th:action="@{/admin}" th:object="${betreuer}" method="post" class="row g-2">
 
-    <!-- Betreuer erstellen -->
-    <div class="card shadow-sm mb-4">
-        <div class="card-body p-3">
-            <h5 class="mb-3">Betreuer hinzufügen</h5>
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 
-            <form th:action="@{/admin}"
-                  th:object="${betreuer}"
-                  method="post"
-                  class="row g-2">
-
-                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-
-                <div class="row g-2 mb-1">
-                    <div class="col-12 col-md-3 col-lg-2">
-                        <label for="titel" class="form-label">Titel</label>
-                        <select id="titel" th:field="*{titel}" class="form-select form-select-sm" required>
-                            <option value="" disabled selected>-- Bitte wählen --</option>
-                            <option value="Prof.">Prof.</option>
-                            <option value="Dr.">Dr.</option>
-                            <option value="Prof. Dr.">Prof. Dr.</option>
-                            <option value="Dipl.-Ing.">Dipl.-Ing.</option>
-                            <option value="Mag.">Mag.</option>
-                        </select>
-                        <div class="text-danger small" th:if="${#fields.hasErrors('titel')}" th:errors="*{titel}"></div>
-                    </div>
-                </div>
-
-                <div class="col-12 col-md-6">
-                    <label for="firstName" class="form-label">Vorname</label>
-                    <input type="text" id="firstName" th:field="*{firstName}" placeholder="Vorname eingeben" class="form-control form-control-sm" />
-                    <div class="text-danger small" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"></div>
-                </div>
-
-                <div class="col-12 col-md-6">
-                    <label for="lastName" class="form-label">Nachname</label>
-                    <input type="text" id="lastName" th:field="*{lastName}" placeholder="Nachname eingeben" class="form-control form-control-sm" />
-                    <div class="text-danger small" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"></div>
-                </div>
-
-                <div class="col-12 col-md-6">
-                    <label class="form-label">E-Mail</label>
-                    <input type="email"
-                           th:field="*{email}"
-                           placeholder="E-Mail eingeben"
-                           class="form-control form-control-sm"/>
-
-                    <div class="text-danger small"
-                         th:if="${#fields.hasErrors('email')}"
-                         th:errors="*{email}">
-                    </div>
-                </div>
-
-
-                <div class="col-12 col-md-6">
-                    <label class="form-label">GitHub ID</label>
-                    <input type="text"
-                           th:field="*{fachId}"
-                           placeholder="Github ID eingeben"
-                           class="form-control form-control-sm"/>
-
-                    <div class="text-danger small"
-                         th:if="${#fields.hasErrors('fachId')}"
-                         th:errors="*{fachId}">
+                    <div class="row g-2 mb-1">
+                        <div class="col-12 col-md-3 col-lg-2">
+                            <label for="titel" class="form-label">Titel</label>
+                            <select id="titel" th:field="*{titel}" class="form-select form-select-sm" required>
+                                <option value="" disabled selected>-- Bitte wählen --</option>
+                                <option value="Prof.">Prof.</option>
+                                <option value="Dr.">Dr.</option>
+                                <option value="Prof. Dr.">Prof. Dr.</option>
+                                <option value="Dipl.-Ing.">Dipl.-Ing.</option>
+                                <option value="Mag.">Mag.</option>
+                            </select>
+                            <div class="text-danger small" th:if="${#fields.hasErrors('titel')}" th:errors="*{titel}">
+                            </div>
+                        </div>
                     </div>
 
-                </div>
+                    <div class="col-12 col-md-6">
+                        <label for="firstName" class="form-label">Vorname</label>
+                        <input type="text" id="firstName" th:field="*{firstName}" placeholder="Vorname eingeben"
+                            class="form-control form-control-sm" />
+                        <div class="text-danger small" th:if="${#fields.hasErrors('firstName')}"
+                            th:errors="*{firstName}"></div>
+                    </div>
 
-                <div class="col-12 col-md-6">
+                    <div class="col-12 col-md-6">
+                        <label for="lastName" class="form-label">Nachname</label>
+                        <input type="text" id="lastName" th:field="*{lastName}" placeholder="Nachname eingeben"
+                            class="form-control form-control-sm" />
+                        <div class="text-danger small" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}">
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-md-6">
+                        <label class="form-label">E-Mail</label>
+                        <input type="email" th:field="*{email}" placeholder="E-Mail eingeben"
+                            class="form-control form-control-sm" />
+
+                        <div class="text-danger small" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">
+                        </div>
+                    </div>
+
+
+                    <div class="col-12 col-md-6">
+                        <label class="form-label">GitHub ID</label>
+                        <input type="text" th:field="*{fachId}" placeholder="Github ID eingeben"
+                            class="form-control form-control-sm" />
+
+                        <div class="text-danger small" th:if="${#fields.hasErrors('fachId')}" th:errors="*{fachId}">
+                        </div>
+
+                    </div>
+
+                    <!-- <div class="col-12 col-md-6">
                     <label for="phone" class="form-label">Telefon</label>
                     <input type="text"
                            id="phone"
@@ -134,59 +124,57 @@
                          th:if="${#fields.hasErrors('phone')}"
                          th:errors="*{phone}">
                     </div>
-                </div>
+                </div> -->
 
 
-                <div class="col-12">
+                    <!-- <div class="col-12">
                     <label for="tags" class="form-label">Fachgebiete (Komma-getrennt)</label>
                     <input type="text"
                            id="tags"
                            name="tags"
                            placeholder="z.B. Spring, KI, Compilerbau"
                            class="form-control form-control-sm">
-                </div>
+                </div> -->
 
-                <input type="hidden"
-                       th:name="${_csrf.parameterName}"
-                       th:value="${_csrf.token}" />
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 
-                <div class="col-12 mt-3">
-                    <button type="submit" class="btn btn-dark btn-sm">
-                        Betreuer erstellen
-                    </button>
-                </div>
-            </form>
+                    <div class="col-12 mt-3">
+                        <button type="submit" class="btn btn-dark btn-sm">
+                            Betreuer erstellen
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
-    </div>
 
-    <!-- Betreuer-Liste mit Lösch-Möglichkeit -->
-    <div class="card shadow-sm">
-        <div class="card-body p-3">
-            <h5 class="mb-3">Betreuer verwalten</h5>
+        <!-- Betreuer-Liste mit Lösch-Möglichkeit -->
+        <div class="card shadow-sm">
+            <div class="card-body p-3">
+                <h5 class="mb-3">Betreuer verwalten</h5>
 
-            <div class="table-responsive">
-                <table class="table table-sm align-middle">
-                    <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>E-Mail</th>
-                        <th>GitHub ID</th>
-                        <th>Telefon</th>
-                        <th>Tags</th>
-                        <th>Bearbeiten</th>
-                        <th class="text-end">Löschen</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:each="b : ${betreuerListe}">
-                        <td th:text="${b.titel} + ${b.firstName} + ' ' + ${b.lastName}"></td>
-                        <td th:text="${b.email}"></td>
-                        <td th:text="${b.fachId}"></td>
-                        <td th:text="${b.phone}"></td>
-                        <td>
+                <div class="table-responsive">
+                    <table class="table table-sm align-middle">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>E-Mail</th>
+                                <th>GitHub ID</th>
+                                <!-- <th>Telefon</th> -->
+                                <!-- <th>Tags</th> -->
+                                <!-- <th>Bearbeiten</th> -->
+                                <th class="text-end">Löschen</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="b : ${betreuerListe}">
+                                <td th:text="${b.titel} + ${b.firstName} + ' ' + ${b.lastName}"></td>
+                                <td th:text="${b.email}"></td>
+                                <td th:text="${b.fachId}"></td>
+                                <!-- <td th:text="${b.phone}"></td> -->
+                                <!-- <td>
                             <span th:each="t : ${b.tags}" class="badge text-bg-secondary me-1" th:text="${t}"></span>
-                        </td>
-                        <td>
+                        </td> -->
+                                <!-- <td>
                             <form th:action="@{/admin/edit}" method="get" class="d-inline">
                                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                                 <input type="hidden" name="id" th:value="${b.fachId}" />
@@ -194,26 +182,28 @@
                                     <i class="fa-solid fa-pen"></i> Bearbeiten
                                 </button>
                             </form>
-                        </td>
-                        <td class="text-end">
-                            <form th:action="@{/admin/delete}" method="post" class="d-inline">
-                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-                                <input type="hidden" name="id" th:value="${b.fachId}" />
-                                <button type="submit" class="btn btn-outline-danger btn-sm">
-                                    <i class="fa-solid fa-trash"></i> Löschen
-                                </button>
-                            </form>
-                        </td>
-                    </tr>
-                    <tr th:if="${betreuerListe == null} or ${betreuerListe.isEmpty()}">
-                        <td colspan="5" class="text-center text-muted">Keine Betreuer vorhanden</td>
-                    </tr>
-                    </tbody>
-                </table>
+                        </td> -->
+                                <td class="text-end">
+                                    <form th:action="@{/admin/delete}" method="post" class="d-inline">
+                                        <input type="hidden" th:name="${_csrf.parameterName}"
+                                            th:value="${_csrf.token}" />
+                                        <input type="hidden" name="id" th:value="${b.fachId}" />
+                                        <button type="submit" class="btn btn-outline-danger btn-sm">
+                                            <i class="fa-solid fa-trash"></i> Löschen
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                            <tr th:if="${betreuerListe == null or #lists.isEmpty(betreuerListe)}">
+                                <td colspan="4" class="text-center text-muted">Keine Betreuer vorhanden</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
 </body>
+
 </html>
