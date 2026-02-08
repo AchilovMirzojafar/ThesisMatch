@@ -1,12 +1,11 @@
 package org.hhu.chatgpt.web;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import org.hhu.chatgpt.application.applicationservice.BetreuerReadService;
 import org.hhu.chatgpt.application.applicationservice.BetreuerWriteService;
@@ -15,7 +14,7 @@ import org.hhu.chatgpt.config.annotations.AdminOrBetreuerOnly;
 import org.hhu.chatgpt.domain.model.Betreuer;
 import org.hhu.chatgpt.domain.model.TagCatalog;
 import org.hhu.chatgpt.domain.model.Thema;
-import org.hhu.chatgpt.domain.model.VeranstaltungenListe;
+import org.hhu.chatgpt.domain.model.VeranstaltungCatalog;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -39,21 +38,21 @@ public class BetreuerController {
     private final BetreuerReadService betreuerReadService;
     private final BetreuerRepository betreuerRepository;
 
-
     public BetreuerController(BetreuerWriteService betreuerWriteService, BetreuerReadService betreuerReadService, BetreuerRepository betreuerRepository) {
         this.betreuerWriteService = betreuerWriteService;
         this.betreuerReadService = betreuerReadService;
         this.betreuerRepository = betreuerRepository;
     }
+
     @GetMapping("/profil")
     public String profil(Model model,
-                         @AuthenticationPrincipal OAuth2User user) {
+            @AuthenticationPrincipal OAuth2User user) {
         Integer id = user.getAttribute("id");
         Optional<Betreuer> optionalBetreuer = Optional.ofNullable(betreuerReadService.findProfile(id)
                 .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND,
-                        "Profil ist als Betreuer nicht gefunden. Bitte wenden Sie sich an den Administrator."
-                )));
+                HttpStatus.NOT_FOUND,
+                "Profil ist als Betreuer nicht gefunden. Bitte wenden Sie sich an den Administrator."
+        )));
 
         Betreuer betreuer = optionalBetreuer.get();
         model.addAttribute("betreuer", betreuer);
@@ -63,15 +62,14 @@ public class BetreuerController {
         return "betreuer/profil";
     }
 
-
     @GetMapping("/edit")
     public String edit(Model model, @AuthenticationPrincipal OAuth2User user) {
         Integer id = user.getAttribute("id");
         Optional<Betreuer> optionalBetreuer = Optional.ofNullable(betreuerReadService.findProfile(id)
                 .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND,
-                        "Profil ist als Betreuer nicht gefunden. Bitte wenden Sie sich an den Administrator."
-                )));
+                HttpStatus.NOT_FOUND,
+                "Profil ist als Betreuer nicht gefunden. Bitte wenden Sie sich an den Administrator."
+        )));
 
         Betreuer betreuer = optionalBetreuer.get();
         model.addAttribute("betreuer", betreuer);
@@ -81,19 +79,19 @@ public class BetreuerController {
 
     @PostMapping("/profil")
     public String updateProfile(@Valid @ModelAttribute Betreuer betreuer,
-                                BindingResult bindingResult,
-                                Model model,
-                                @AuthenticationPrincipal OAuth2User user) {
+            BindingResult bindingResult,
+            Model model,
+            @AuthenticationPrincipal OAuth2User user) {
         Integer id = user.getAttribute("id");
         Optional<Betreuer> optionalBetreuer = Optional.ofNullable(betreuerReadService.findProfile(id)
                 .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND,
-                        "Profil ist als Betreuer nicht gefunden. Bitte wenden Sie sich an den Administrator."
-                )));
+                HttpStatus.NOT_FOUND,
+                "Profil ist als Betreuer nicht gefunden. Bitte wenden Sie sich an den Administrator."
+        )));
 
         Betreuer oldBetreuer = optionalBetreuer.get();
 
-        if (bindingResult.hasErrors()) {    
+        if (bindingResult.hasErrors()) {
             model.addAttribute("allTags", TagCatalog.ALL);
             return "betreuer/edit";
         }
@@ -106,36 +104,44 @@ public class BetreuerController {
 
     }
 
-        @GetMapping("/newThema")
-        public String newThema(Model model) {
-            model.addAttribute("thema", new Thema());
-            model.addAttribute("allVeranstaltungen", VeranstaltungenListe.VERANSTALTUNGEN);
-            return "thema/newThema";
-        }
+    @GetMapping("/newThema")
+    public String newThema(Model model) {
+        model.addAttribute("thema", new Thema());
+        model.addAttribute("allTags", TagCatalog.ALL);
+        model.addAttribute("allRequirements", VeranstaltungCatalog.ALL);
+        return "thema/newThema";
+    }
 
     @PostMapping("/newThema")
-    public String createNewThema(@ModelAttribute("thema") Thema thema,
-                                 @RequestParam(name = "tagsCsv", required = false) String tagsCsv,
-                                 @AuthenticationPrincipal OAuth2User user) {
-
+    public String createNewThema(
+            @Valid @ModelAttribute("thema") Thema thema,
+            BindingResult bindingResult,
+            @RequestParam(name = "tags", required = false) List<String> tags,
+            @AuthenticationPrincipal OAuth2User user,
+            Model model
+    ) {
         Integer id = user.getAttribute("id");
 
         Betreuer betreuer = betreuerReadService.findProfile(id)
                 .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND,
-                        "Profil ist als Betreuer nicht gefunden. Bitte wenden Sie sich an den Administrator."
-                ));
+                HttpStatus.NOT_FOUND,
+                "Profil ist als Betreuer nicht gefunden. Bitte wenden Sie sich an den Administrator."
+        ));
 
-        // requirements: never null
+        // convert checkbox list -> Set
+        thema.setTags(tags == null ? Set.of() : new LinkedHashSet<>(tags));
+
+        // requirements safety
         if (thema.getRequirements() == null) {
             thema.setRequirements(Set.of());
         }
 
-        // tags from CSV -> Set<String>
-        Set<String> tags = parseCsvToSet(tagsCsv);
-        thema.setTags(tags);
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("allTags", TagCatalog.ALL);
+             model.addAttribute("allRequirements", VeranstaltungCatalog.ALL);
+            return "thema/newThema";
+        }
 
-        // ensure betreuer.themenSet is initialized and mutable
         if (betreuer.getThemenSet() == null) {
             betreuer.setThemenSet(new HashSet<>());
         }
@@ -146,18 +152,9 @@ public class BetreuerController {
         return "redirect:/profil";
     }
 
-    private Set<String> parseCsvToSet(String csv) {
-        if (csv == null || csv.isBlank()) return Set.of();
-
-        return Arrays.stream(csv.split(","))
-                .map(String::trim)
-                .filter(s -> !s.isBlank())
-                .collect(Collectors.toCollection(LinkedHashSet::new));
-    }
-
     @PostMapping("/thema/{themaId}/delete")
     public String deleteThema(@PathVariable UUID themaId,
-                              @AuthenticationPrincipal OAuth2User user) {
+            @AuthenticationPrincipal OAuth2User user) {
 
         Integer fachId = user.getAttribute("id");
 
@@ -177,6 +174,4 @@ public class BetreuerController {
         return "redirect:/profil";
     }
 
-
 }
-

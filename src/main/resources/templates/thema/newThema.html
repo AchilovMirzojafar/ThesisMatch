@@ -9,68 +9,99 @@
 
 <body class="bg-light">
 
-<nav class="navbar navbar-expand-lg bg-white shadow-sm px-4">
-    <a class="navbar-brand fw-bold fs-4 text-dark text-decoration-none" th:href="@{/profil}">
-        ThesisMatch
-    </a>
-</nav>
+    <nav class="navbar navbar-expand-lg bg-white shadow-sm px-4">
+        <a class="navbar-brand fw-bold fs-4 text-dark text-decoration-none" th:href="@{/profil}">
+            ThesisMatch
+        </a>
+    </nav>
 
-<div class="container mt-4">
+    <div class="container mt-4">
 
-    <div class="mb-4">
-        <h2 class="fw-semibold mb-1">Neues Thema</h2>
-        <p class="text-muted mb-0">Bitte fülle die Informationen aus.</p>
-    </div>
-
-    <div class="card shadow-sm">
-        <div class="card-body">
-
-            <form method="post" th:action="@{/newThema}" th:object="${thema}" class="row g-3">
-
-                <div class="col-12">
-                    <label class="form-label fw-semibold">Titel *</label>
-                    <input type="text" th:field="*{title}" class="form-control" required>
-                    <div class="text-danger small" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></div>
-                </div>
-
-                <div class="col-12 col-md-6">
-                    <label class="form-label fw-semibold">Tags</label>
-                    <input type="text" name="tagsCsv" class="form-control" placeholder="z.B. Compilerbau, Rust">
-                </div>
-
-                <div class="col-12 col-md-6">
-                    <label class="form-label fw-semibold">Voraussetzungen</label>
-
-                    <div th:each="v : ${allVeranstaltungen}" class="form-check">
-                        <input class="form-check-input"
-                               type="checkbox"
-                               th:field="*{requirements}"
-                               th:value="${v}"
-                               th:id="${'req_' + v}">
-                        <label class="form-check-label"
-                               th:for="${'req_' + v}"
-                               th:text="${v}">
-                        </label>
-                    </div>
-                </div>
-
-                <div class="col-12">
-                    <label class="form-label fw-semibold">Beschreibung (Markdown)</label>
-                    <textarea th:field="*{description}" class="form-control" rows="6"></textarea>
-                </div>
-
-                <div class="col-12 d-flex gap-2">
-                    <button type="submit" class="btn btn-dark">Thema erstellen</button>
-                    <a th:href="@{/profil}" class="btn btn-outline-secondary">Abbrechen</a>
-                </div>
-
-            </form>
-
-
+        <div class="mb-4">
+            <h2 class="fw-semibold mb-1">Neues Thema</h2>
+            <p class="text-muted mb-0">Bitte fülle die Informationen aus.</p>
         </div>
-    </div>
 
-</div>
+        <div class="card shadow-sm">
+            <div class="card-body">
+
+                <form method="post" th:action="@{/newThema}" th:object="${thema}" class="row g-3">
+
+                    <div class="col-12">
+                        <label class="form-label fw-semibold">Titel *</label>
+                        <input type="text" th:field="*{title}" class="form-control" required>
+                        <div class="text-danger small" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></div>
+                    </div>
+
+                    <!-- TAGS (Checkboxes instead of CSV text) -->
+                    <div class="col-12 col-md-6">
+                        <label class="form-label fw-semibold">Tags *</label>
+
+                        <div class="border rounded p-2" style="max-height: 180px; overflow-y: auto;">
+                            <div class="row g-2">
+                                <div class="col-6 col-lg-4" th:each="t : ${allTags}">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="tags" th:value="${t}"
+                                            th:id="${'tag_' + #strings.replace(t,' ','_')}"
+                                            th:checked="${thema.tags != null and thema.tags.contains(t)}">
+                                        <label class="form-check-label" th:for="${'tag_' + #strings.replace(t,' ','_')}"
+                                            th:text="${t}">
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="text-danger small mt-1" th:if="${#fields.hasErrors('tags')}" th:errors="*{tags}">
+                        </div>
+                    </div>
+
+
+                    <!-- REQUIREMENTS (use catalog list) -->
+                    <div class="col-12 col-md-6">
+                        <label class="form-label fw-semibold">Voraussetzungen *</label>
+
+                        <div class="border rounded p-2" style="max-height: 180px; overflow-y: auto;">
+                            <div class="row g-2">
+                                <div class="col-12" th:each="v : ${allRequirements}">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" th:field="*{requirements}"
+                                            th:value="${v}" th:id="${'req_' + #strings.replace(v,' ','_')}">
+                                        <label class="form-check-label" th:for="${'req_' + #strings.replace(v,' ','_')}"
+                                            th:text="${v}">
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="text-danger small mt-1" th:if="${#fields.hasErrors('requirements')}"
+                            th:errors="*{requirements}">
+                        </div>
+                    </div>
+
+
+
+                    <div class="col-12">
+                        <label class="form-label fw-semibold">Beschreibung (Markdown)</label>
+                        <textarea th:field="*{description}" class="form-control" rows="6" maxlength="300"></textarea>
+
+                        <div class="text-danger small" th:if="${#fields.hasErrors('description')}"
+                            th:errors="*{description}"></div>
+                    </div>
+
+                    <div class="col-12 d-flex gap-2">
+                        <button type="submit" class="btn btn-dark">Thema erstellen</button>
+                        <a th:href="@{/profil}" class="btn btn-outline-secondary">Abbrechen</a>
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+
+    </div>
 
 </body>
+
 </html>

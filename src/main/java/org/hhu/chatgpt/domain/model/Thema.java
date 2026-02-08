@@ -4,14 +4,25 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
+
 public class Thema {
 
     private UUID id;
 
+    @NotBlank(message = "Titel darf nicht leer sein.")
+    @Size(max = 50, message = "Titel darf maximal 50 Zeichen haben.")
     private String title;
+
+    @Size(max = 300, message = "Beschreibung darf maximal 300 Zeichen haben.")
     private String description;
 
+    @NotEmpty(message = "Bitte mindestens einen Tag auswählen.")
     private Set<String> tags = new HashSet<>();
+    
+    @NotEmpty(message = "Bitte mindestens eine Veranstaltung auswählen.")
     private Set<String> requirements = new HashSet<>();
 
 
