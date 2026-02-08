@@ -4,17 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <title>ThesisMatch - Admin</title>
-
-    <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 
 <body class="bg-light">
-
-    <!-- NAVBAR -->
     <nav class="navbar navbar-expand-lg bg-white shadow-sm px-4">
         <a class="navbar-brand fw-bold fs-4 text-dark text-decoration-none" th:href="@{/admin}">
             ThesisMatch
@@ -26,16 +20,12 @@
 
     <div class="container-fluid px-4 mt-4" style="max-width: 1000px;">
         <div class="d-flex justify-content-between align-items-center mb-4">
-
-            <!-- Erster Slogan ganz links -->
             <div class="text-start">
                 <h1 class="display-6 fw-semibold mb-0">
                     ADMIN<br>
                     VERWALTUNG
                 </h1>
             </div>
-
-            <!-- Zweiter Slogan ganz rechts -->
             <div class="text-end">
                 <p class="fs-5 fw-semibold mb-1">
                     Willkommen ADMIN 👋
@@ -45,7 +35,6 @@
                     <strong sec:authentication="principal.attributes['login']"></strong>
                 </p>
             </div>
-
         </div>
 
         <!-- Feedback Nachricht -->
@@ -106,38 +95,10 @@
                         <label class="form-label">GitHub ID</label>
                         <input type="text" th:field="*{fachId}" placeholder="Github ID eingeben"
                             class="form-control form-control-sm" />
-
                         <div class="text-danger small" th:if="${#fields.hasErrors('fachId')}" th:errors="*{fachId}">
                         </div>
-
                     </div>
-
-                    <!-- <div class="col-12 col-md-6">
-                    <label for="phone" class="form-label">Telefon</label>
-                    <input type="text"
-                           id="phone"
-                           th:field="*{phone}"
-                           placeholder="Telefon eingeben"
-                           class="form-control form-control-sm"/>
-
-                    <div class="text-danger small"
-                         th:if="${#fields.hasErrors('phone')}"
-                         th:errors="*{phone}">
-                    </div>
-                </div> -->
-
-
-                    <!-- <div class="col-12">
-                    <label for="tags" class="form-label">Fachgebiete (Komma-getrennt)</label>
-                    <input type="text"
-                           id="tags"
-                           name="tags"
-                           placeholder="z.B. Spring, KI, Compilerbau"
-                           class="form-control form-control-sm">
-                </div> -->
-
                     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-
                     <div class="col-12 mt-3">
                         <button type="submit" class="btn btn-dark btn-sm">
                             Betreuer erstellen
@@ -159,9 +120,6 @@
                                 <th>Name</th>
                                 <th>E-Mail</th>
                                 <th>GitHub ID</th>
-                                <!-- <th>Telefon</th> -->
-                                <!-- <th>Tags</th> -->
-                                <!-- <th>Bearbeiten</th> -->
                                 <th class="text-end">Löschen</th>
                             </tr>
                         </thead>
@@ -170,19 +128,6 @@
                                 <td th:text="${b.titel} + ${b.firstName} + ' ' + ${b.lastName}"></td>
                                 <td th:text="${b.email}"></td>
                                 <td th:text="${b.fachId}"></td>
-                                <!-- <td th:text="${b.phone}"></td> -->
-                                <!-- <td>
-                            <span th:each="t : ${b.tags}" class="badge text-bg-secondary me-1" th:text="${t}"></span>
-                        </td> -->
-                                <!-- <td>
-                            <form th:action="@{/admin/edit}" method="get" class="d-inline">
-                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-                                <input type="hidden" name="id" th:value="${b.fachId}" />
-                                <button type="submit" class="btn btn-outline-dark btn-sm">
-                                    <i class="fa-solid fa-pen"></i> Bearbeiten
-                                </button>
-                            </form>
-                        </td> -->
                                 <td class="text-end">
                                     <form th:action="@{/admin/delete}" method="post" class="d-inline">
                                         <input type="hidden" th:name="${_csrf.parameterName}"
