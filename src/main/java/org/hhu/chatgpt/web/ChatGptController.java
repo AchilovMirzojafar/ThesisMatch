@@ -3,11 +3,13 @@ package org.hhu.chatgpt.web;
 import java.util.List;
 
 import org.hhu.chatgpt.application.applicationservice.BetreuerReadService;
-import org.hhu.chatgpt.domain.model.Matching;
-import org.hhu.chatgpt.domain.model.MatchingResult;
-import org.hhu.chatgpt.domain.model.Betreuer;
 import org.hhu.chatgpt.application.applicationservice.MatchingService;
 import org.hhu.chatgpt.application.applicationservice.ThemaService;
+import org.hhu.chatgpt.domain.model.Betreuer;
+import org.hhu.chatgpt.domain.model.Matching;
+import org.hhu.chatgpt.domain.model.MatchingResult;
+import org.hhu.chatgpt.domain.model.TagCatalog;
+import org.hhu.chatgpt.domain.model.VeranstaltungCatalog;
 import org.hhu.chatgpt.dummydata.MatchingDummyData;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -58,7 +60,10 @@ public class ChatGptController {
         model.addAttribute("resultCount", filtered.size());
         model.addAttribute("search", search);
         model.addAttribute("tag", tag);
+        model.addAttribute("allTags", TagCatalog.ALL);
         model.addAttribute("requirement", requirement);
+        model.addAttribute("allRequirements", VeranstaltungCatalog.ALL);
+
 
         return "student/themen";
     }
@@ -75,6 +80,7 @@ public class ChatGptController {
         model.addAttribute("betreuendeListe", searched);
         model.addAttribute("searchname", searchname);
         model.addAttribute("tag", tag);
+        model.addAttribute("allTags", TagCatalog.ALL);
 
         return "student/betreuende";
     }

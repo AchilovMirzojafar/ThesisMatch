@@ -18,29 +18,22 @@
             ThesisMatch
         </a>
 
-        <div class="ms-auto d-flex gap-2"
-             sec:authorize="isAuthenticated()">
-            <a th:href="@{/admin}" class="btn btn-dark"
-               sec:authorize="hasRole('ADMIN')">Adminansicht</a>
-            <a th:href="@{/profil}" class="btn btn-dark"
-               sec:authorize="hasRole('BETREUER')">Profil</a>
-            <a th:href="@{/home}" class="btn btn-dark"
-               sec:authorize="!hasAnyRole('BETREUER')">Home</a>
-            <a th:href="@{/betreuende}" class="btn btn-dark"
-               sec:authorize="!hasAnyRole('BETREUER')">Betreuende</a>
-            <a th:href="@{/themen}" class="btn btn-dark"
-               sec:authorize="!hasAnyRole('BETREUER')">Themen</a>
-            <a th:href="@{/matching}" class="btn btn-dark"
-               sec:authorize="!hasAnyRole('BETREUER')">Matching</a>
+        <div class="ms-auto d-flex gap-2" sec:authorize="isAuthenticated()">
+            <a th:href="@{/admin}" class="btn btn-dark" sec:authorize="hasRole('ADMIN')">Adminansicht</a>
+            <a th:href="@{/profil}" class="btn btn-dark" sec:authorize="hasRole('BETREUER')">Profil</a>
+            <a th:href="@{/home}" class="btn btn-dark" sec:authorize="!hasAnyRole('BETREUER')">Home</a>
+            <a th:href="@{/betreuende}" class="btn btn-dark" sec:authorize="!hasAnyRole('BETREUER')">Betreuende</a>
+            <a th:href="@{/themen}" class="btn btn-dark" sec:authorize="!hasAnyRole('BETREUER')">Themen</a>
+            <a th:href="@{/matching}" class="btn btn-dark" sec:authorize="!hasAnyRole('BETREUER')">Matching</a>
         </div>
 
-<!--        -->
-<!--        <div class="ms-auto d-flex gap-2">-->
-<!--            <a href="home" class="btn btn-dark">Home</a>-->
-<!--            <a href="betreuende" class="btn btn-dark active">Betreuende</a>-->
-<!--            <a href="themen" class="btn btn-dark">Themen</a>-->
-<!--            <a href="matching" class="btn btn-dark">Matching</a>-->
-<!--        </div>-->
+        <!--        -->
+        <!--        <div class="ms-auto d-flex gap-2">-->
+        <!--            <a href="home" class="btn btn-dark">Home</a>-->
+        <!--            <a href="betreuende" class="btn btn-dark active">Betreuende</a>-->
+        <!--            <a href="themen" class="btn btn-dark">Themen</a>-->
+        <!--            <a href="matching" class="btn btn-dark">Matching</a>-->
+        <!--        </div>-->
     </nav>
 
     <!-- MAIN -->
@@ -74,12 +67,9 @@
                         </label>
                         <select id="fachgebiet" name="tag" class="form-select">
                             <option value="">Alle Fachgebiete</option>
-                            <option value="compilerbau" th:selected="${tag == 'compilerbau'}">Compilerbau</option>
-                            <option value="formale methoden" th:selected="${tag == 'formale methoden'}">Formale Methoden</option>
-                            <option value="theoretische Informatik" th:selected="${tag == 'theoretische Informatik'}">Theoretische Informatik</option>
-                            <option value="webentwicklung" th:selected="${tag == 'webentwicklung'}">Webentwicklung</option>
-                            <option value="spring" th:selected="${tag == 'spring'}">Spring</option>
-                            <option value="KI" th:selected="${tag == 'KI'}">KI</option>
+
+                            <option th:each="t : ${allTags}" th:value="${t}" th:text="${t}" th:selected="${tag == t}">
+                            </option>
                         </select>
                     </div>
 
@@ -109,14 +99,15 @@
 
                     <!-- LEFT -->
                     <div>
-                        <h5 class="fw-bold mb-1" th:text="${betreuer.titel + ' ' + betreuer.firstName + ' ' + betreuer.lastName}">
+                        <h5 class="fw-bold mb-1"
+                            th:text="${betreuer.titel + ' ' + betreuer.firstName + ' ' + betreuer.lastName}">
                             Jens Bendo
                         </h5>
 
                         <div class="text-muted small">
                             Fachgebiet:
-                                <span class="fw-bold text-dark"
-                                 th:text="${#strings.listJoin(betreuer.tags, ', ')}">>Compilerbau, KI</span>
+                            <span class="fw-bold text-dark"
+                                th:text="${#strings.listJoin(betreuer.tags, ', ')}">>Compilerbau, KI</span>
                         </div>
 
                     </div>
