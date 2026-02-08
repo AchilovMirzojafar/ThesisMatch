@@ -11,7 +11,6 @@ import org.hhu.chatgpt.application.applicationservice.BetreuerReadService;
 import org.hhu.chatgpt.application.applicationservice.BetreuerWriteService;
 import org.hhu.chatgpt.config.annotations.AdminOnly;
 import org.hhu.chatgpt.domain.model.Betreuer;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -19,7 +18,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.validation.Valid;
@@ -30,9 +28,6 @@ public class AdminController {
     private final BetreuerWriteService betreuerWriteService;
     private final BetreuerReadService betreuerReadService;
 
-
-
-    //Konstruktor für Controller
     public AdminController(BetreuerWriteService betreuerWriteService, BetreuerReadService betreuerReadService) {
         this.betreuerWriteService = betreuerWriteService;
         this.betreuerReadService = betreuerReadService;
@@ -50,23 +45,13 @@ public class AdminController {
     @AdminOnly
     public String createBetreuer(
             @Valid @ModelAttribute("betreuer") Betreuer betreuer,
-            BindingResult bindingResult,
-            // @RequestParam(value = "tags", required = false) String tags,
-            Model model,
-            RedirectAttributes ra) {
+            BindingResult bindingResult, Model model) {
 
         if (bindingResult.hasErrors()) {
-    model.addAttribute("betreuer", betreuer); // ensure form object is present
+    model.addAttribute("betreuer", betreuer);
     model.addAttribute("betreuerListe", betreuerReadService.list());
     return "admin/admin";
 }
-
-        // Set<String> tagList = (tags == null || tags.isBlank())
-        //         ? Set.of()
-        //         : Arrays.stream(tags.split(","))
-        //         .map(String::trim)
-        //         .filter(s -> !s.isBlank())
-        //         .collect(Collectors.toSet());
 
         Betreuer b = new Betreuer(
                 betreuer.getFachId(),
@@ -87,52 +72,6 @@ public class AdminController {
     model.addAttribute("betreuerListe", betreuerReadService.list());
     return "admin/admin";
 }
-
-        //   ra.addFlashAttribute("message", created ? "Betreuer erstellt." : "Betreuer  bereits vorhanden.");
-        return "redirect:/admin";
-    }
-
-    @GetMapping("/admin/edit")
-    @AdminOnly
-    public String updateBetreuer(@RequestParam("id") Integer id, Model model) {
-        Optional<Betreuer> optionalBetreuer = Optional.ofNullable(betreuerReadService.findProfile(id)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND,
-                        "Profil ist als Betreuer nicht gefunden. Bitte wenden Sie sich an den Administrator."
-                )));
-
-            Betreuer betreuer = optionalBetreuer.get();
-            model.addAttribute("betreuer", betreuer);
-            model.addAttribute("allTags", betreuer.getTags());
-
-        return "admin/edit";
-    }
-
-    @PostMapping("/admin/edit")
-    @AdminOnly
-    public String saveUpdates(
-            @ModelAttribute Betreuer betreuer,
-            @RequestParam(required = false) List<String> existingTags,
-            @RequestParam(required = false) String newTags
-    ) {
-        Set<String> result = new LinkedHashSet<>();
-
-        // 1. bestehende Checkbox-Tags
-        if (existingTags != null) {
-            result.addAll(existingTags);
-        }
-
-        // 2. neue Tags aus Textfeld
-        if (newTags != null && !newTags.isBlank()) {
-            Arrays.stream(newTags.split(","))
-                    .map(String::trim)
-                    .filter(s -> !s.isEmpty())
-                    .forEach(result::add);
-        }
-
-        betreuer.setTags(new HashSet<>(result));
-
-        betreuerWriteService.updateProfile(betreuer);
         return "redirect:/admin";
     }
 

@@ -39,7 +39,7 @@ public class AppUserService implements OAuth2UserService<OAuth2UserRequest, OAut
         authorities.add(new SimpleGrantedAuthority("ROLE_STUDENT"));
 
         Integer id = (originalUser.getAttribute("id"));
-        if (id != null && adminLogins.contains(id)) { //Prüfung, ob Name in adminId enthalten ist
+        if (id != null && adminLogins.contains(id)) { //Prüfung, ob GitHubId in adminId enthalten ist
             authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN")); //Wenn Ja, wird die Rolle Admin zugewiesen
         }
         else if (("".equals(originalUser.getAttribute("id")))) {
