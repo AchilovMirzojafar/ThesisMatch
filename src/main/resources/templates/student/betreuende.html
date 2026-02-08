@@ -34,13 +34,6 @@
                sec:authorize="!hasAnyRole('BETREUER')">Matching</a>
         </div>
 
-<!--        -->
-<!--        <div class="ms-auto d-flex gap-2">-->
-<!--            <a href="home" class="btn btn-dark">Home</a>-->
-<!--            <a href="betreuende" class="btn btn-dark active">Betreuende</a>-->
-<!--            <a href="themen" class="btn btn-dark">Themen</a>-->
-<!--            <a href="matching" class="btn btn-dark">Matching</a>-->
-<!--        </div>-->
     </nav>
 
     <!-- MAIN -->
@@ -122,9 +115,12 @@
                     </div>
 
                     <!-- RIGHT -->
-                    <a href="#" class="btn btn-outline-dark btn-sm px-3">
-                        Details ansehen
+                    <a th:href="@{/betreuende/{fachId}(fachId=${betreuer.fachId})}"
+                       class="btn btn-outline-dark btn-sm px-3">
+                        <i class="fa-solid fa-user me-1"></i>
+                        Profil ansehen
                     </a>
+
                 </div>
 
             </div>

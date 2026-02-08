@@ -1,6 +1,7 @@
 package org.hhu.chatgpt.web;
 
 import java.util.List;
+import java.util.Set;
 
 import org.hhu.chatgpt.application.applicationservice.BetreuerReadService;
 import org.hhu.chatgpt.domain.model.Matching;
@@ -8,13 +9,17 @@ import org.hhu.chatgpt.domain.model.MatchingResult;
 import org.hhu.chatgpt.domain.model.Betreuer;
 import org.hhu.chatgpt.application.applicationservice.MatchingService;
 import org.hhu.chatgpt.application.applicationservice.ThemaService;
+import org.hhu.chatgpt.domain.model.Thema;
 import org.hhu.chatgpt.dummydata.MatchingDummyData;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.server.ResponseStatusException;
 
 @Controller
 public class ChatGptController {
@@ -78,6 +83,21 @@ public class ChatGptController {
 
         return "student/betreuende";
     }
+
+    @GetMapping("/betreuende/{fachId}")
+    public String publicProfil(@PathVariable Integer fachId, Model model) {
+
+        Betreuer betreuer = betreuerReadService.findProfile(fachId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Betreuer nicht gefunden"));
+
+        model.addAttribute("betreuer", betreuer);
+
+        Set<Thema> themen = (betreuer.getThemenSet() == null) ? Set.of() : betreuer.getThemenSet();
+        model.addAttribute("themaListe", themen);
+
+        return "student/view/betreuerProfilView";
+    }
+
 
     @GetMapping("/matching")
     public String matching(
