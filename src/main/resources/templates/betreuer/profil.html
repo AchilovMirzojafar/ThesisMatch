@@ -1,179 +1,165 @@
 <!DOCTYPE html>
-<html lang="de"
-      xmlns:th="http://www.thymeleaf.org">
+<html lang="de" xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="UTF-8">
     <title>ThesisMatch – Profil</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 
 <body class="bg-light">
 
-<!-- NAVBAR -->
-<nav class="navbar navbar-expand-lg bg-white shadow-sm px-4">
-    <a class="navbar-brand fw-bold fs-4 text-dark text-decoration-none" th:href="@{/profil}">
-        ThesisMatch
-    </a>
-</nav>
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg bg-white shadow-sm px-4">
+        <a class="navbar-brand fw-bold fs-4 text-dark text-decoration-none" th:href="@{/profil}">
+            ThesisMatch
+        </a>
+    </nav>
 
-<div class="container mt-4">
+    <div class="container mt-4">
 
-    <!-- HEADER -->
-    <div class="mb-4 d-flex align-items-center">
-        <div>
-            <h2 class="fw-semibold mb-1">
-                Profil von
-                <span th:text="${betreuer.titel}"></span>
-                <span th:text="${betreuer.firstName}"></span>
-                <span th:text="${betreuer.lastName}"></span>
-            </h2>
-            <p class="text-muted mb-0">
-                Öffentliche Profilansicht
-            </p>
+        <!-- HEADER -->
+        <div class="mb-4 d-flex align-items-center">
+            <div>
+                <h2 class="fw-semibold mb-1">
+                    Profil von
+                    <span th:text="${betreuer.titel}"></span>
+                    <span th:text="${betreuer.firstName}"></span>
+                    <span th:text="${betreuer.lastName}"></span>
+                </h2>
+                <p class="text-muted mb-0">
+                    Öffentliche Profilansicht
+                </p>
+            </div>
+
         </div>
 
-    </div>
 
 
+        <div class="row g-4">
 
-    <div class="row g-4">
+            <!-- LEFT: PROFILBILD -->
+            <div class="col-md-4">
+                <div class="card shadow-sm">
+                    <div class="card-body text-center">
+                        <img src="https://img.freepik.com/premium-vector/user-profile-icon-flat-style-member-avatar-vector-illustration-isolated-background-human-permission-sign-business-concept_157943-15752.jpg?semt=ais_hybrid "
+                            alt="Profilbild" class="rounded-circle"
+                            style="width: 130px; height: 160px; object-fit: cover;">
+                    </div>
+                </div>
+            </div>
 
-        <!-- LEFT: PROFILBILD -->
-        <div class="col-md-4">
-            <div class="card shadow-sm">
-                <div class="card-body text-center">
-                    <img src="https://img.freepik.com/premium-vector/user-profile-icon-flat-style-member-avatar-vector-illustration-isolated-background-human-permission-sign-business-concept_157943-15752.jpg?semt=ais_hybrid "
-                         alt="Profilbild"
-                         class="rounded-circle"
-                         style="width: 130px; height: 160px; object-fit: cover;">
+            <!-- RIGHT: KONTAKTINFO -->
+            <div class="col-md-8">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+
+                        <h5 class="mb-3">Kontaktinformationen</h5>
+
+                        <p>
+                            <strong>Name:</strong>
+                            <span th:text="${betreuer.titel}"></span>
+                            <span th:text="${betreuer.firstName}"></span>
+                            <span th:text="${betreuer.lastName}"></span>
+                        </p>
+
+                        <p>
+                            <strong>E-Mail:</strong>
+                            <span th:text="${betreuer.email}"></span>
+                        </p>
+
+                        <p>
+                            <strong>Telefon:</strong>
+                            <span th:text="${betreuer.phone}"></span>
+                        </p>
+
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- RIGHT: KONTAKTINFO -->
-        <div class="col-md-8">
-            <div class="card shadow-sm">
-                <div class="card-body">
+        <!-- TAGS -->
+        <div class="card shadow-sm mt-4">
+            <div class="card-body">
 
-                    <h5 class="mb-3">Kontaktinformationen</h5>
+                <h5>Fachgebiete</h5>
 
-                    <p>
-                        <strong>Name:</strong>
-                        <span th:text="${betreuer.titel}"></span>
-                        <span th:text="${betreuer.firstName}"></span>
-                        <span th:text="${betreuer.lastName}"></span>
-                    </p>
+                <div class="d-flex flex-wrap gap-2 mt-2">
+                    <span class="badge bg-secondary" th:each="tag : ${betreuer.tags}" th:text="${tag}">
+                    </span>
+                </div>
 
-                    <p>
-                        <strong>E-Mail:</strong>
-                        <span th:text="${betreuer.email}"></span>
-                    </p>
+            </div>
+        </div>
 
-                    <p>
-                        <strong>Telefon:</strong>
-                        <span th:text="${betreuer.phone}"></span>
-                    </p>
+        <!-- Themen-Liste mit Lösch-Möglichkeit -->
+        <div class="card shadow-sm">
+            <div class="card-body p-3">
+                <h5 class="mb-3">Themen verwalten</h5>
 
+                <div class="table-responsive">
+                    <table class="table table-sm align-middle">
+                        <thead>
+                            <tr>
+                                <th>Titel</th>
+                                <th>Tags</th>
+                                <th class="text-end">Löschen</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            <tr th:each="t : ${themaListe}">
+                                <td th:text="${t.title}"></td>
+
+                                <td>
+                                    <span th:each="tag : ${t.tags}" class="badge text-bg-secondary me-1"
+                                        th:text="${tag}">
+                                    </span>
+                                </td>
+
+                                <td class="text-end align-middle">
+                                    <form th:action="@{/thema/{id}/delete(id=${t.id})}" method="post" class="d-inline">
+                                        <button type="submit" class="btn btn-outline-danger btn-sm">
+                                            <i class="fa-solid fa-trash me-1"></i>
+                                            Löschen
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+
+                            <tr th:if="${themaListe == null or #lists.isEmpty(themaListe)}">
+                                <td colspan="3" class="text-center text-muted">Kein Thema vorhanden</td>
+                            </tr>
+
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- TAGS -->
-    <div class="card shadow-sm mt-4">
-        <div class="card-body">
-
-            <h5>Fachgebiete</h5>
-
-            <div class="d-flex flex-wrap gap-2 mt-2">
-                <span class="badge bg-secondary"
-                      th:each="tag : ${betreuer.tags}"
-                      th:text="${tag}">
-                </span>
-            </div>
-
-        </div>
-    </div>
-
-    <!-- Themen-Liste mit Lösch-Möglichkeit -->
-    <div class="card shadow-sm">
-        <div class="card-body p-3">
-            <h5 class="mb-3">Themen verwalten</h5>
-
-            <div class="table-responsive">
-                <table class="table table-sm align-middle">
-                    <thead>
-                    <tr>
-                        <th>Titel</th>
-                        <th>Tags</th>
-                        <th>Bearbeiten</th>
-                        <th>Löschen</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:each="t : ${themaListe}">
-                        <td th:text="${t.title}"></td>
-
-                        <td>
-        <span th:each="tag : ${t.tags}"
-              class="badge text-bg-secondary me-1"
-              th:text="${tag}">
-        </span>
-                        </td>
-
-                        <td>
-                            <a class="btn btn-outline-dark btn-sm"
-                               th:href="@{/thema/{id}/edit(id=${t.id})}">
-                                <i class="fa-solid fa-pen"></i> Bearbeiten
-                            </a>
-                        </td>
-
-                        <td class="text-end">
-                            <form th:action="@{/thema/{id}/delete(id=${t.id})}" method="post" class="d-inline">
-<!--                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">-->
-                                <button type="submit" class="btn btn-outline-danger btn-sm">
-                                    <i class="fa-solid fa-trash me-1"></i>
-                                    Löschen
-                                </button>
-                            </form>
-
-                        </td>
-                    </tr>
-
-                    <tr th:if="${themaListe == null or #lists.isEmpty(themaListe)}">
-                        <td colspan="4" class="text-center text-muted">Kein Thema vorhanden</td>
-                    </tr>
-                    </tbody>
-                </table>
+        <div class="mb-4 d-flex align-items-center">
+            <div class="ms-auto d-flex gap-2">
+                <a th:href="@{/newThema}" class="btn btn-outline-primary">
+                    <i class="fa-solid fa-plus me-1"></i>
+                    Neues Thema
+                </a>
             </div>
         </div>
-    </div>
-    <div class="mb-4 d-flex align-items-center">
-        <div class="ms-auto d-flex gap-2">
-            <a th:href="@{/newThema}"
-               class="btn btn-outline-primary">
-                <i class="fa-solid fa-plus me-1"></i>
-                Neues Thema
-            </a>
+
+        <div class="mb-4 d-flex align-items-center">
+            <div class="ms-auto d-flex gap-2">
+                <a th:href="@{/edit}" class="btn btn-outline-dark">
+                    <i class="fa-solid fa-pen me-1"></i>
+                    Profil bearbeiten
+                </a>
+            </div>
         </div>
+
+
     </div>
-
-    <div class="mb-4 d-flex align-items-center">
-        <div class="ms-auto d-flex gap-2">
-            <a th:href="@{/edit}"
-               class="btn btn-outline-dark">
-                <i class="fa-solid fa-pen me-1"></i>
-                Profil bearbeiten
-            </a>
-        </div>
-    </div>
-
-
-</div>
 
 </body>
+
 </html>
