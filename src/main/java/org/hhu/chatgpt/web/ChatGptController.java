@@ -1,5 +1,6 @@
 package org.hhu.chatgpt.web;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -12,7 +13,6 @@ import org.hhu.chatgpt.domain.model.MatchingResult;
 import org.hhu.chatgpt.domain.model.TagCatalog;
 import org.hhu.chatgpt.domain.model.Thema;
 import org.hhu.chatgpt.domain.model.VeranstaltungCatalog;
-import org.hhu.chatgpt.dummydata.MatchingDummyData;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -69,10 +69,8 @@ public class ChatGptController {
         model.addAttribute("requirement", requirement);
         model.addAttribute("allRequirements", VeranstaltungCatalog.ALL);
 
-
         return "student/themen";
     }
-
 
     @GetMapping("/betreuende")
     public String betreuende(
@@ -104,21 +102,25 @@ public class ChatGptController {
         return "student/view/betreuerProfilView";
     }
 
-
     @GetMapping("/matching")
     public String matching(
             @RequestParam(name = "kurse", required = false) List<String> kurse,
             @RequestParam(name = "interessen", required = false) List<String> interessen,
             Model model) {
 
-        Matching matching = MatchingDummyData.getDummyMatching();
+        Matching matching = new Matching(
+                new ArrayList<>(VeranstaltungCatalog.ALL),
+                new ArrayList<>(TagCatalog.ALL)
+        );
         model.addAttribute("matching", matching);
 
-        if ((kurse != null && !kurse.isEmpty()) || (interessen != null && !interessen.isEmpty())) {
-            List<MatchingResult> results = matchingService.getMatchingResults(kurse, interessen);
-            System.out.println("results size = " + results.size());
-            model.addAttribute("results", results);
-        }
+        List<String> safeKurse = (kurse == null) ? List.of() : kurse;
+        List<String> safeInteressen = (interessen == null) ? List.of() : interessen;
+
+        if (!safeKurse.isEmpty() || !safeInteressen.isEmpty()) {
+        List<MatchingResult> results = matchingService.getMatchingResults(safeKurse, safeInteressen);
+        model.addAttribute("results", results);
+    }
 
         return "student/matching";
     }

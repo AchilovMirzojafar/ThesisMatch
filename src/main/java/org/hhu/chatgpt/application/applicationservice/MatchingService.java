@@ -1,16 +1,26 @@
 package org.hhu.chatgpt.application.applicationservice;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.hhu.chatgpt.application.applicationservice.repository.BetreuerRepository;
 import org.hhu.chatgpt.domain.model.Betreuer;
 import org.hhu.chatgpt.domain.model.MatchingResult;
 import org.hhu.chatgpt.domain.model.Thema;
-import org.hhu.chatgpt.dummydata.BetreuerDummyData;
 import org.springframework.stereotype.Service;
-
-import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class MatchingService {
+
+        private final BetreuerRepository betreuerRepository;
+
+        public MatchingService(BetreuerRepository betreuerRepository) {
+                this.betreuerRepository = betreuerRepository;
+        }
 
         public List<MatchingResult> getMatchingResults(
                 List<String> selectedKurse,
@@ -25,8 +35,7 @@ public class MatchingService {
 
                 List<MatchingResult> results = new ArrayList<>();
 
-                // Источник правды: агрегат Betreuer (каждый Betreuer владеет своими Themen)
-                List<Betreuer> betreuendeListe = BetreuerDummyData.getBetreuerListe();
+                List<Betreuer> betreuendeListe = betreuerRepository.findAll();
 
                 for (Betreuer prof : betreuendeListe) {
 
@@ -38,6 +47,7 @@ public class MatchingService {
                                 Set<String> themaTags = thema.getTags() == null ? Set.of() : thema.getTags();
                                 Set<String> profTags = prof.getTags() == null ? Set.of() : prof.getTags();
 
+                                // combine topic tags + prof tags for interest matching
                                 Set<String> allInterestTags = new HashSet<>();
                                 allInterestTags.addAll(themaTags);
                                 allInterestTags.addAll(profTags);
@@ -62,6 +72,7 @@ public class MatchingService {
                                         ? 0
                                         : (int) Math.round((matchedRequirements + matchedTags) * 100.0 / total);
 
+                                // only return results that match at least something
                                 if (matchedRequirements > 0 || matchedTags > 0) {
                                         results.add(new MatchingResult(
                                                 thema,
