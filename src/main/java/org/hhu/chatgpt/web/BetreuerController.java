@@ -82,26 +82,26 @@ public class BetreuerController {
             BindingResult bindingResult,
             Model model,
             @AuthenticationPrincipal OAuth2User user) {
+
         Integer id = user.getAttribute("id");
-        Optional<Betreuer> optionalBetreuer = Optional.ofNullable(betreuerReadService.findProfile(id)
+
+        Betreuer oldBetreuer = betreuerReadService.findProfile(id)
                 .orElseThrow(() -> new ResponseStatusException(
                 HttpStatus.NOT_FOUND,
                 "Profil ist als Betreuer nicht gefunden. Bitte wenden Sie sich an den Administrator."
-        )));
-
-        Betreuer oldBetreuer = optionalBetreuer.get();
+        ));
 
         if (bindingResult.hasErrors()) {
             model.addAttribute("allTags", TagCatalog.ALL);
             return "betreuer/edit";
         }
 
+        // lock fields that must not be changed via form
         betreuer.setFachId(oldBetreuer.getFachId());
         betreuer.setThemenSet(oldBetreuer.getThemenSet());
 
         betreuerWriteService.updateProfile(betreuer);
         return "redirect:/profil";
-
     }
 
     @GetMapping("/newThema")
@@ -138,7 +138,7 @@ public class BetreuerController {
 
         if (bindingResult.hasErrors()) {
             model.addAttribute("allTags", TagCatalog.ALL);
-             model.addAttribute("allRequirements", VeranstaltungCatalog.ALL);
+            model.addAttribute("allRequirements", VeranstaltungCatalog.ALL);
             return "thema/newThema";
         }
 
