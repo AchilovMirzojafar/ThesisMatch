@@ -48,10 +48,12 @@
 
                         <div class="border rounded p-3 bg-white">
                             <div class="form-check mb-2" th:each="kurs : ${matching.kurse}">
-                                <input class="form-check-input" type="checkbox" name="kurse" th:id="'kurs-' + ${kurs}"
+                                <input class="form-check-input" type="checkbox" name="kurse"
+                                    th:id="${'kurs-' + #strings.replace(kurs,' ','_')}"
                                     th:value="${kurs}"
                                     th:checked="${param.kurse != null and #lists.contains(param.kurse, kurs)}">
-                                <label class="form-check-label" th:for="'kurs-' + ${kurs}" th:text="${kurs}">
+                                <label class="form-check-label" th:for="${'kurs-' + #strings.replace(kurs,' ','_')}"
+                                 th:text="${kurs}">
                                 </label>
                             </div>
                         </div>
@@ -65,9 +67,10 @@
                         <div class="border rounded p-3 bg-white">
                             <div class="form-check mb-2" th:each="tag : ${matching.interessen}">
                                 <input class="form-check-input" type="checkbox" name="interessen"
-                                    th:id="'tag-' + ${tag}" th:value="${tag}"
+                                    th:id="${'tag-' + #strings.replace(tag,' ','_')}" th:value="${tag}"
                                     th:checked="${param.interessen != null and #lists.contains(param.interessen, tag)}">
-                                <label class="form-check-label" th:for="'tag-' + ${tag}" th:text="${tag}">
+                                <label class="form-check-label" th:for="${'tag-' + #strings.replace(tag,' ','_')}"
+                                 th:text="${tag}">
                                 </label>
                             </div>
                         </div>
