@@ -22,10 +22,16 @@
         <div class="ms-auto d-flex gap-2" sec:authorize="isAuthenticated()">
             <a th:href="@{/admin}" class="btn btn-dark" sec:authorize="hasRole('ADMIN')">Adminansicht</a>
             <a th:href="@{/profil}" class="btn btn-dark" sec:authorize="hasRole('BETREUER')">Profil</a>
-            <a th:href="@{/home}" class="btn btn-dark" sec:authorize="!hasAnyRole('BETREUER')">Home</a>
-            <a th:href="@{/betreuende}" class="btn btn-dark" sec:authorize="!hasAnyRole('BETREUER')">Betreuende</a>
-            <a th:href="@{/themen}" class="btn btn-dark" sec:authorize="!hasAnyRole('BETREUER')">Themen</a>
-            <a th:href="@{/matching}" class="btn btn-dark" sec:authorize="!hasAnyRole('BETREUER')">Matching</a>
+            <a th:href="@{/home}" class="btn btn-dark" sec:authorize="hasRole('ADMIN') or !hasRole('BETREUER')">Home</a>
+
+            <a th:href="@{/betreuende}" class="btn btn-dark"
+                sec:authorize="hasRole('ADMIN') or !hasRole('BETREUER')">Betreuende</a>
+
+            <a th:href="@{/themen}" class="btn btn-dark"
+                sec:authorize="hasRole('ADMIN') or !hasRole('BETREUER')">Themen</a>
+
+            <a th:href="@{/matching}" class="btn btn-dark"
+                sec:authorize="hasRole('ADMIN') or !hasRole('BETREUER')">Matching</a>
         </div>
     </nav>
 
@@ -101,44 +107,48 @@
         </section>
 
         <!-- RESULTS -->
-        <div class="row">
-            <div class="col-md-4 mb-3" th:each="thema : ${themenListe}">
-                <div class="card shadow-sm h-100">
-                    <div class="card-body">
+        <section aria-label="Themenliste">
+            <h2 class="fw-bold mb-3">Gefundene Themen</h2>
 
-                        <h5 class="card-title" th:text="${thema.title}">
-                            Titel der Bachelorarbeit
-                        </h5>
+            <div class="row">
+                <div class="col-md-4 mb-3" th:each="thema : ${themenListe}">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body">
 
-                        <p class="mb-1">
-                            <strong>Betreuer:</strong>
-                            <span th:text="${thema.betreuerName}">Prof. Max Mustermann</span>
-                        </p>
+                            <h5 class="card-title" th:text="${thema.title}">
+                                Titel der Bachelorarbeit
+                            </h5>
 
-                        <p class="mb-2">
-                            <strong>Ziel:</strong>
-                            <span th:text="${thema.description}">
-                                Ziel der Bachelorarbeit
-                            </span>
-                        </p>
+                            <p class="mb-1">
+                                <strong>Betreuer:</strong>
+                                <span th:text="${thema.betreuerName}">Prof. Max Mustermann</span>
+                            </p>
 
-                        <p class="text-muted small mb-3">
-                            <strong>Voraussetzung:</strong>
-                            <span
-                                th:text="${thema.requirements != null ? #strings.arrayJoin(thema.requirements.toArray(), ', ') : ''}"></span>
-                            Hinweise zur Arbeit
-                            </span>
-                        </p>
+                            <p class="mb-2">
+                                <strong>Ziel:</strong>
+                                <span th:text="${thema.description}">
+                                    Ziel der Bachelorarbeit
+                                </span>
+                            </p>
 
-                        <a href="#" class="btn btn-outline-dark btn-sm">
-                            <i class="fa-solid fa-file-pdf me-1"></i>
-                            PDF herunterladen
-                        </a>
+                            <p class="text-muted small mb-2">
+                                <strong>Tags:</strong>
+                                <span
+                                    th:text="${thema.tags != null ? #strings.arrayJoin(thema.tags.toArray(), ', ') : ''}"></span>
+                            </p>
 
+                            <p class="text-muted small mb-3">
+                                <strong>Voraussetzung:</strong>
+                                <span
+                                    th:text="${thema.requirements != null ? #strings.arrayJoin(thema.requirements.toArray(), ', ') : ''}"></span>
+                            </p>
+
+
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </section>
 
     </main>
 

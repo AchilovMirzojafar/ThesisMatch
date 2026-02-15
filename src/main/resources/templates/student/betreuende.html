@@ -21,19 +21,19 @@
         <div class="ms-auto d-flex gap-2" sec:authorize="isAuthenticated()">
             <a th:href="@{/admin}" class="btn btn-dark" sec:authorize="hasRole('ADMIN')">Adminansicht</a>
             <a th:href="@{/profil}" class="btn btn-dark" sec:authorize="hasRole('BETREUER')">Profil</a>
-            <a th:href="@{/home}" class="btn btn-dark" sec:authorize="!hasAnyRole('BETREUER')">Home</a>
-            <a th:href="@{/betreuende}" class="btn btn-dark" sec:authorize="!hasAnyRole('BETREUER')">Betreuende</a>
-            <a th:href="@{/themen}" class="btn btn-dark" sec:authorize="!hasAnyRole('BETREUER')">Themen</a>
-            <a th:href="@{/matching}" class="btn btn-dark" sec:authorize="!hasAnyRole('BETREUER')">Matching</a>
+            
+            <a th:href="@{/home}" class="btn btn-dark" sec:authorize="hasRole('ADMIN') or !hasRole('BETREUER')">Home</a>
+
+            <a th:href="@{/betreuende}" class="btn btn-dark"
+                sec:authorize="hasRole('ADMIN') or !hasRole('BETREUER')">Betreuende</a>
+
+            <a th:href="@{/themen}" class="btn btn-dark"
+                sec:authorize="hasRole('ADMIN') or !hasRole('BETREUER')">Themen</a>
+
+            <a th:href="@{/matching}" class="btn btn-dark"
+                sec:authorize="hasRole('ADMIN') or !hasRole('BETREUER')">Matching</a>
         </div>
 
-<!--        -->
-<!--        <div class="ms-auto d-flex gap-2">-->
-<!--            <a href="home" class="btn btn-dark">Home</a>-->
-<!--            <a href="betreuende" class="btn btn-dark active">Betreuende</a>-->
-<!--            <a href="themen" class="btn btn-dark">Themen</a>-->
-<!--            <a href="matching" class="btn btn-dark">Matching</a>-->
-<!--        </div>-->
     </nav>
 
     <!-- MAIN -->
@@ -114,7 +114,7 @@
 
                     <!-- RIGHT -->
                     <a th:href="@{/betreuende/{fachId}(fachId=${betreuer.fachId})}"
-                       class="btn btn-outline-dark btn-sm px-3">
+                        class="btn btn-outline-dark btn-sm px-3">
                         <i class="fa-solid fa-user me-1"></i>
                         Profil ansehen
                     </a>
