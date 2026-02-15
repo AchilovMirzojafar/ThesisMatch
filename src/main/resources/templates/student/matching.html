@@ -19,10 +19,16 @@
         <div class="ms-auto d-flex gap-2" sec:authorize="isAuthenticated()">
             <a th:href="@{/admin}" class="btn btn-dark" sec:authorize="hasRole('ADMIN')">Adminansicht</a>
             <a th:href="@{/profil}" class="btn btn-dark" sec:authorize="hasRole('BETREUER')">Profil</a>
-            <a th:href="@{/home}" class="btn btn-dark" sec:authorize="!hasAnyRole('BETREUER')">Home</a>
-            <a th:href="@{/betreuende}" class="btn btn-dark" sec:authorize="!hasAnyRole('BETREUER')">Betreuende</a>
-            <a th:href="@{/themen}" class="btn btn-dark" sec:authorize="!hasAnyRole('BETREUER')">Themen</a>
-            <a th:href="@{/matching}" class="btn btn-dark" sec:authorize="!hasAnyRole('BETREUER')">Matching</a>
+            <a th:href="@{/home}" class="btn btn-dark" sec:authorize="hasRole('ADMIN') or !hasRole('BETREUER')">Home</a>
+
+            <a th:href="@{/betreuende}" class="btn btn-dark"
+                sec:authorize="hasRole('ADMIN') or !hasRole('BETREUER')">Betreuende</a>
+
+            <a th:href="@{/themen}" class="btn btn-dark"
+                sec:authorize="hasRole('ADMIN') or !hasRole('BETREUER')">Themen</a>
+
+            <a th:href="@{/matching}" class="btn btn-dark"
+                sec:authorize="hasRole('ADMIN') or !hasRole('BETREUER')">Matching</a>
         </div>
     </nav>
 
@@ -49,11 +55,10 @@
                         <div class="border rounded p-3 bg-white">
                             <div class="form-check mb-2" th:each="kurs : ${matching.kurse}">
                                 <input class="form-check-input" type="checkbox" name="kurse"
-                                    th:id="${'kurs-' + #strings.replace(kurs,' ','_')}"
-                                    th:value="${kurs}"
+                                    th:id="${'kurs-' + #strings.replace(kurs,' ','_')}" th:value="${kurs}"
                                     th:checked="${param.kurse != null and #lists.contains(param.kurse, kurs)}">
                                 <label class="form-check-label" th:for="${'kurs-' + #strings.replace(kurs,' ','_')}"
-                                 th:text="${kurs}">
+                                    th:text="${kurs}">
                                 </label>
                             </div>
                         </div>
@@ -70,7 +75,7 @@
                                     th:id="${'tag-' + #strings.replace(tag,' ','_')}" th:value="${tag}"
                                     th:checked="${param.interessen != null and #lists.contains(param.interessen, tag)}">
                                 <label class="form-check-label" th:for="${'tag-' + #strings.replace(tag,' ','_')}"
-                                 th:text="${tag}">
+                                    th:text="${tag}">
                                 </label>
                             </div>
                         </div>
