@@ -1,7 +1,5 @@
 <!DOCTYPE html>
-<html lang="en"
-      xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
     <meta charset="UTF-8">
@@ -16,78 +14,78 @@
 
 <body class="bg-light">
 
-<!-- NAVBAR -->
-<nav class="navbar navbar-expand-lg bg-white shadow-sm px-4">
-    <a class="navbar-brand fw-bold fs-4 text-dark text-decoration-none" th:href="@{/home}">
-        ThesisMatch
-    </a>
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg bg-white shadow-sm px-4">
+        <a class="navbar-brand fw-bold fs-4 text-dark text-decoration-none" th:href="@{/home}">
+            ThesisMatch
+        </a>
 
-    <div class="ms-auto d-flex gap-2"
-         sec:authorize="isAuthenticated()">
-        <a th:href="@{/admin}" class="btn btn-dark"
-           sec:authorize="hasRole('ADMIN')">Adminansicht</a>
-        <a th:href="@{/profil}" class="btn btn-dark"
-           sec:authorize="hasRole('BETREUER')">Profil</a>
-        <a th:href="@{/home}" class="btn btn-dark"
-           sec:authorize="!hasAnyRole('BETREUER')">Home</a>
-        <a th:href="@{/betreuende}" class="btn btn-dark"
-           sec:authorize="!hasAnyRole('BETREUER')">Betreuende</a>
-        <a th:href="@{/themen}" class="btn btn-dark"
-           sec:authorize="!hasAnyRole('BETREUER')">Themen</a>
-        <a th:href="@{/matching}" class="btn btn-dark"
-           sec:authorize="!hasAnyRole('BETREUER')">Matching</a>
-    </div>
-</nav>
+        <div class="ms-auto d-flex gap-2" sec:authorize="isAuthenticated()">
+            <a th:href="@{/admin}" class="btn btn-dark" sec:authorize="hasRole('ADMIN')">Adminansicht</a>
 
-<!-- MAIN CONTENT -->
-<div class="container mt-5">
-    <div class="row align-items-center">
+            <a th:href="@{/profil}" class="btn btn-dark" sec:authorize="hasRole('BETREUER')">Profil</a>
 
-        <!-- LEFT: SLOGAN -->
-        <div class="col-md-6">
-            <h1 class="display-5 fw-semibold mb-4">
-                FANG DEINEN WEG ZUM<br>
-                PERFEKTEN BACHELOR AN
-            </h1>
-            <p class="text-muted fs-5">
-                ThesisMatch verbindet Studierende und Betreuende effizient und transparent.
-            </p>
+            <a th:href="@{/home}" class="btn btn-dark" sec:authorize="hasRole('ADMIN') or !hasRole('BETREUER')">Home</a>
+
+            <a th:href="@{/betreuende}" class="btn btn-dark"
+                sec:authorize="hasRole('ADMIN') or !hasRole('BETREUER')">Betreuende</a>
+
+            <a th:href="@{/themen}" class="btn btn-dark"
+                sec:authorize="hasRole('ADMIN') or !hasRole('BETREUER')">Themen</a>
+
+            <a th:href="@{/matching}" class="btn btn-dark"
+                sec:authorize="hasRole('ADMIN') or !hasRole('BETREUER')">Matching</a>
+
         </div>
+    </nav>
 
-        <!-- RIGHT: LOGIN CARD -->
-        <div class="col-md-5 offset-md-1">
-            <div class="card border-0 shadow-sm">
-                <div class="card-body p-4 text-center">
+    <!-- MAIN CONTENT -->
+    <div class="container mt-5">
+        <div class="row align-items-center">
 
-                    <!-- wird nur den Gast gezeig(nich gelogt) -->
-                    <a sec:authorize="!isAuthenticated()"
-                       href="/oauth2/authorization/github"
-                       class="btn btn-dark btn-lg w-100">
-                        <i class="fa-brands fa-github me-2"></i>
-                        Login mit GitHub
-                    </a>
+            <!-- LEFT: SLOGAN -->
+            <div class="col-md-6">
+                <h1 class="display-5 fw-semibold mb-4">
+                    FANG DEINEN WEG ZUM<br>
+                    PERFEKTEN BACHELOR AN
+                </h1>
+                <p class="text-muted fs-5">
+                    ThesisMatch verbindet Studierende und Betreuende effizient und transparent.
+                </p>
+            </div>
 
-                    <!-- wird gelogte users gezeigt -->
-                    <div sec:authorize="isAuthenticated()">
-                        <p class="fs-3 fw-semibold mt-3">
-                            Willkommen 👋
-                        </p>
-                        <p class="fs-5">
-                            Du bist eingeloggt als
-                            <strong sec:authentication="principal.attributes['login']"></strong>
-                        </p>
+            <!-- RIGHT: LOGIN CARD -->
+            <div class="col-md-5 offset-md-1">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-4 text-center">
+
+                        <!-- wird nur den Gast gezeig(nich gelogt) -->
+                        <a sec:authorize="!isAuthenticated()" href="/oauth2/authorization/github"
+                            class="btn btn-dark btn-lg w-100">
+                            <i class="fa-brands fa-github me-2"></i>
+                            Login mit GitHub
+                        </a>
+
+                        <!-- wird gelogte users gezeigt -->
+                        <div sec:authorize="isAuthenticated()">
+                            <p class="fs-3 fw-semibold mt-3">
+                                Willkommen 👋
+                            </p>
+                            <p class="fs-5">
+                                Du bist eingeloggt als
+                                <strong sec:authentication="principal.attributes['login']"></strong>
+                            </p>
+
+                        </div>
 
                     </div>
 
                 </div>
-
             </div>
-        </div>
 
+        </div>
     </div>
-</div>
 
 </body>
+
 </html>
-
-
