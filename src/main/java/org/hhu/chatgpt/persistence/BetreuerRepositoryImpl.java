@@ -78,7 +78,6 @@ public class BetreuerRepositoryImpl implements BetreuerRepository {
 
     private ThemaDTO toThemaDTO(Thema t) {
         ThemaDTO dto = new ThemaDTO();
-        //UUID einsetzen
         dto.setId(t.getId());
 
         dto.setTitle(t.getTitle());

@@ -15,6 +15,7 @@ import org.hhu.chatgpt.application.applicationservice.ThemaService;
 import org.hhu.chatgpt.domain.model.Betreuer;
 import org.hhu.chatgpt.domain.model.MatchingResult;
 import org.hhu.chatgpt.domain.model.Thema;
+import org.hhu.chatgpt.domain.model.ThemaListItem;
 import org.hhu.chatgpt.helper.WithMockOAuth2User;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,7 +32,8 @@ class ChatGptControllerMvcTest {
 
     @MockBean ThemaService themaService;
     @MockBean BetreuerReadService betreuerReadService;
-    @MockBean MatchingService matchingService;
+    @MockBean
+    MatchingService matchingService;
 
     @Test
     @DisplayName("Startseite: GET / rendert student/home")

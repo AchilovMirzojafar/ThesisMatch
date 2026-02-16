@@ -11,7 +11,6 @@ public class Matching {
         this.interessen = interessen;
     }
 
-    // Getters
     public List<String> getKurse() {
         return kurse;
     }

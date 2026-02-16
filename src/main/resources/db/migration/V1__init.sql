@@ -36,7 +36,7 @@ CREATE TABLE thema
 
     betreuer INTEGER NOT NULL,
 
-    CONSTRAINT fk_thema_betreuer   -- Fremdschlüssel auf Betreuer ID
+    CONSTRAINT fk_thema_betreuer
         FOREIGN KEY (betreuer)
             REFERENCES betreuer(id)
             ON DELETE CASCADE

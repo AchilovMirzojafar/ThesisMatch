@@ -5,7 +5,6 @@
     <meta charset="UTF-8">
     <title>ThesisMatch - Matching</title>
 
-    <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/css/public.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -34,7 +33,6 @@
 
     <main class="container my-5">
 
-        <!-- PAGE HEADER -->
         <div class="mb-4">
             <h1 class="fw-bold">Matching durchführen</h1>
             <p class="text-muted">
@@ -42,13 +40,11 @@
             </p>
         </div>
 
-        <!-- SEARCH & FILTER CARD -->
         <section class="card shadow-sm mb-4">
             <div class="card-body">
 
                 <form method="get" action="/matching" class="row g-3">
 
-                    <!-- Courses -->
                     <div class="col-md-4">
                         <label class="form-label fw-semibold">Bestandene Kurse</label>
 
@@ -64,8 +60,6 @@
                         </div>
                     </div>
 
-
-                    <!-- Interests -->
                     <div class="col-md-4">
                         <label class="form-label fw-semibold">Interessen</label>
 
@@ -81,8 +75,6 @@
                         </div>
                     </div>
 
-
-                    <!-- Submit -->
                     <div class="col-12 mt-3 d-flex align-items-center gap-2">
 
                         <!-- Eingaben & Filter -->
@@ -113,7 +105,6 @@
                 <div class="col-md-6" th:each="r : ${results}">
                     <div class="card shadow-sm h-100 position-relative">
 
-                        <!-- SCORE (top right) -->
                         <div class="position-absolute top-0 end-0 p-3 text-end">
                             <div class="text-muted small">Score</div>
                             <div class="fw-bold fs-4" th:text="${r.score} + '%'"></div>
@@ -121,10 +112,8 @@
 
                         <div class="card-body">
 
-                            <!-- Thema -->
                             <h5 class="fw-bold mb-2" th:text="${r.thema.title}"></h5>
 
-                            <!-- Betreuende -->
                             <p class="mb-2">
                                 <strong>Betreuende:</strong>
                                 <span
@@ -145,8 +134,6 @@
                                 </li>
                             </ul>
 
-                            <!-- Thema und Betreunde Tags -->
-
                             <div class="mt-2">
                                 <span class="badge bg-dark me-1" th:each="req : ${r.thema.requirements}"
                                     th:text="${req}"></span>
@@ -166,11 +153,7 @@
 
         </section>
 
-
-
     </main>
-
-
 
 </body>
 

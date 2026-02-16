@@ -96,7 +96,6 @@ public class BetreuerController {
             return "betreuer/edit";
         }
 
-        // lock fields that must not be changed via form
         betreuer.setFachId(oldBetreuer.getFachId());
         betreuer.setThemenSet(oldBetreuer.getThemenSet());
 
@@ -131,7 +130,6 @@ public class BetreuerController {
         // convert checkbox list -> Set
         thema.setTags(tags == null ? Set.of() : new LinkedHashSet<>(tags));
 
-        // requirements safety
         if (thema.getRequirements() == null) {
             thema.setRequirements(Set.of());
         }

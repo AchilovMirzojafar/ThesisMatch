@@ -1,4 +1,4 @@
-package org.hhu.chatgpt.web;
+package org.hhu.chatgpt.domain.model;
 
 import java.util.Set;
 

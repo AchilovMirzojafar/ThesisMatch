@@ -5,10 +5,7 @@
     <meta charset="UTF-8">
     <title>ThesisMatch – Login</title>
 
-    <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 
@@ -39,11 +36,9 @@
         </div>
     </nav>
 
-    <!-- MAIN CONTENT -->
     <div class="container mt-5">
         <div class="row align-items-center">
 
-            <!-- LEFT: SLOGAN -->
             <div class="col-md-6">
                 <h1 class="display-5 fw-semibold mb-4">
                     FANG DEINEN WEG ZUM<br>
@@ -54,19 +49,16 @@
                 </p>
             </div>
 
-            <!-- RIGHT: LOGIN CARD -->
             <div class="col-md-5 offset-md-1">
                 <div class="card border-0 shadow-sm">
                     <div class="card-body p-4 text-center">
 
-                        <!-- wird nur den Gast gezeig(nich gelogt) -->
                         <a sec:authorize="!isAuthenticated()" href="/oauth2/authorization/github"
                             class="btn btn-dark btn-lg w-100">
                             <i class="fa-brands fa-github me-2"></i>
                             Login mit GitHub
                         </a>
 
-                        <!-- wird gelogte users gezeigt -->
                         <div sec:authorize="isAuthenticated()">
                             <p class="fs-3 fw-semibold mt-3">
                                 Willkommen 👋

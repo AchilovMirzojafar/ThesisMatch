@@ -1,12 +1,10 @@
 package org.hhu.chatgpt.application.applicationservice;
 
-import org.hhu.chatgpt.web.ThemaListItem;
+import org.hhu.chatgpt.domain.model.ThemaListItem;
 import org.hhu.chatgpt.application.applicationservice.repository.BetreuerRepository;
 import org.hhu.chatgpt.domain.model.Betreuer;
 import org.hhu.chatgpt.domain.model.Thema;
 import org.springframework.stereotype.Service;
-
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 

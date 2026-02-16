@@ -4,8 +4,8 @@ spring:
       client:
         registration:
           github:
-            client-id: Ov23liEH0QPDQQWwGpwc
-            client-secret: e941c2d52cb6ce2dc0bce7b8ecc194fdbed7ae8a
+            client-id:  ${CLIENT_ID}
+            client-secret: ${CLIENT_SECRET}
             scope:
               - read:public_repo
   datasource:

@@ -8,7 +8,7 @@ import org.hhu.chatgpt.application.applicationservice.ThemaService;
 import org.hhu.chatgpt.application.applicationservice.repository.BetreuerRepository;
 import org.hhu.chatgpt.domain.model.Betreuer;
 import org.hhu.chatgpt.domain.model.Thema;
-import org.hhu.chatgpt.web.ThemaListItem;
+import org.hhu.chatgpt.domain.model.ThemaListItem;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
