@@ -43,14 +43,14 @@ Die Anwendung ist als serverseitige Webanwendung mit Java und Spring Boot umgese
 
 ## 1.2 Qualitätsziele
 
-| Priorität | Qualitätsziel | Beschreibung |
-|------------|--------------|--------------|
-| Hoch | Sicherheit | Kein unautorisierter Zugriff |
-| Hoch | Konsistenz | Keine Lost Updates |
-| Hoch | Wartbarkeit | Klare Schichtenarchitektur |
-| Mittel | Testbarkeit | 80–90 % Testabdeckung |
+| Priorität | Qualitätsziel | Beschreibung                    |
+|------------|--------------|---------------------------------|
+| Hoch | Sicherheit | Kein unautorisierter Zugriff    |
+| Hoch | Konsistenz | Keine Lost Updates              |
+| Hoch | Wartbarkeit | Klare Schichtenarchitektur      |
+| Mittel | Testbarkeit | 80-90 % Testabdeckung           |
 | Mittel | Erweiterbarkeit | Matching und Rollen erweiterbar |
-| Mittel | Accessibility | Tastaturbedienbarkeit |
+| Mittel | Accessibility | Tastaturbedienbarkeit           |
 
 ---
 
@@ -197,7 +197,6 @@ Enthält fachliche Logik:
 - Betreuer (Aggregate Root)
 - Thema
 - Matching
-- File
 - TagCatalog
 - VeranstaltungCatalog
 
@@ -254,7 +253,6 @@ Die Anwendung läuft serverseitig und wird über HTTP aufgerufen.
 - Method-Level Security
 - Keine Secrets im Repository
 - Validierung aller Eingaben
-- Schutz vor XSS bei Markdown
 
 ---
 
@@ -270,8 +268,6 @@ Die Anwendung läuft serverseitig und wird über HTTP aufgerufen.
 ## 8.3 Validierung
 
 - Titel eines Themas darf nicht leer sein
-- Datei ≤ 10 MB
-- Dateitypprüfung über `FileType`
 - Tags und Veranstaltungen über Kataloge validiert
 
 ---
@@ -315,7 +311,6 @@ Die Anwendung läuft serverseitig und wird über HTTP aufgerufen.
 | Risiko | Maßnahme |
 |--------|----------|
 | Lost Updates | Versionierung |
-| XSS | Sanitizing |
 | Schichtenverletzung | ArchUnit |
 | Zu große Aggregate | Regelmäßige DDD-Überprüfung |
 

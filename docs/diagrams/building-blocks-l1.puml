@@ -7,7 +7,7 @@ rectangle "Web Layer\n\nAdminController\nBetreuerController\nChatGptController" 
 
 rectangle "Application Layer\n\nBetreuerReadService\nBetreuerWriteService\nThemaService\nMatchingService\nAppUserService" as App
 
-rectangle "Domain Layer\n\nBetreuer\nThema\nMatching\nMatchingResult\nFile\nFileType\nTagCatalog\nVeranstaltungCatalog\nVeranstaltungenListe" as Domain
+rectangle "Domain Layer\n\nBetreuer\nThema\nMatching\nMatchingResult\nTagCatalog\nVeranstaltungCatalog\nVeranstaltungenListe" as Domain
 
 rectangle "Persistence Adapter Layer\n\nBetreuerRepository (Interface)\nBetreuerRepositoryImpl\nBetreuerDaoRepository\nDTOs (BetreuerDTO, ThemaDTO, ...)" as Persistence
 
