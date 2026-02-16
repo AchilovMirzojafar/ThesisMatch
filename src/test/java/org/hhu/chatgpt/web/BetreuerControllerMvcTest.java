@@ -43,7 +43,6 @@ class BetreuerControllerMvcTest {
     @MockBean
     BetreuerRepository betreuerRepository;
 
-    // SecurityConfig braucht diese Beans (siehe deine Config-Signatur)
     @MockBean
     RoleBasedSuccessHandler successHandler;
 
@@ -54,10 +53,9 @@ class BetreuerControllerMvcTest {
 
     private static Betreuer betreuerMitThemen(Set<Thema> themen) {
         Betreuer b = new Betreuer();
-        // wichtig: Controller liest user.getAttribute("id") und ruft findProfile(id)
         b.setThemenSet(themen);
-        b.setTags(Set.of("AI", "ML")); // falls bei dir Tag-Typ nicht String ist -> anpassen/entfernen
-        b.setFachId(123456);           // falls fachId Integer ist
+        b.setTags(Set.of("AI", "ML"));
+        b.setFachId(123456);
         return b;
     }
 
@@ -137,7 +135,6 @@ class BetreuerControllerMvcTest {
     @Test
     void updateProfile_withValidationErrors_rendersEdit() throws Exception {
         Betreuer existing = betreuerMitThemen(new HashSet<>());
-        // optional: existing tags initialisieren, ist aber fürs Template hier nicht entscheidend
         existing.setTags(new LinkedHashSet<>());
         when(betreuerReadService.findProfile(USER_ID)).thenReturn(Optional.of(existing));
 
@@ -146,17 +143,12 @@ class BetreuerControllerMvcTest {
                                 .authorities(new SimpleGrantedAuthority("ROLE_BETREUER"))
                                 .attributes(a -> a.putAll(Map.of("id", USER_ID))))
                         .with(csrf())
-                        // tags mitsenden -> damit betreruer.tags != null und Thymeleaf nicht crasht
                         .param("tags", "ML")
-                        // Fehler erzwingen (bei dir ist fachId @NotNull)
-                        // -> fachId NICHT senden oder bewusst leer lassen:
-                        // .param("fachId", "")
-                        // zusätzlich (optional) invalid email, falls @Email aktiv ist
                         .param("email", "invalid-email"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("betreuer/edit"))
                 .andExpect(model().attributeExists("allTags"))
-                .andExpect(model().attributeHasFieldErrors("betreuer", "fachId")); // passt zu deinem Log
+                .andExpect(model().attributeHasFieldErrors("betreuer", "fachId"));
 
         verify(betreuerReadService).findProfile(USER_ID);
         verifyNoInteractions(betreuerWriteService);
@@ -219,8 +211,7 @@ class BetreuerControllerMvcTest {
                                 .authorities(new SimpleGrantedAuthority("ROLE_BETREUER"))
                                 .attributes(a -> a.putAll(Map.of("id", USER_ID))))
                         .with(csrf())
-                        // absichtlich invalid: Pflichtfelder von Thema fehlen -> anpassen an deine @Valid
-                        .param("titel", ""))
+                       .param("titel", ""))
                 .andExpect(status().isOk())
                 .andExpect(view().name("thema/newThema"))
                 .andExpect(model().attributeExists("allTags"))
@@ -243,7 +234,6 @@ class BetreuerControllerMvcTest {
                         .param("title", "Neues Thema")
                         .param("description", "Beschreibung")
                         .param("tags", "AI", "ML")
-                        // WICHTIG: requirements ist @NotEmpty -> mindestens 1 Wert schicken
                         .param("requirements", "Data Science"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/profil"));
