@@ -1,0 +1,18 @@
+@startuml
+title Bausteinsicht Level 1 – Thesis-Matching-Plattform
+skinparam shadowing false
+top to bottom direction
+
+rectangle "Web Layer\n\nAdminController\nBetreuerController\nChatGptController" as Web
+
+rectangle "Application Layer\n\nBetreuerReadService\nBetreuerWriteService\nThemaService\nMatchingService\nAppUserService" as App
+
+rectangle "Domain Layer\n\nBetreuer\nThema\nMatching\nMatchingResult\nFile\nFileType\nTagCatalog\nVeranstaltungCatalog\nVeranstaltungenListe" as Domain
+
+rectangle "Persistence Adapter Layer\n\nBetreuerRepository (Interface)\nBetreuerRepositoryImpl\nBetreuerDaoRepository\nDTOs (BetreuerDTO, ThemaDTO, ...)" as Persistence
+
+Web --> App
+App --> Domain
+Persistence --> Domain : implements interfaces
+
+@enduml

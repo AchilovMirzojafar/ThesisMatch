@@ -1,0 +1,25 @@
+cat > docs/diagrams/context.puml <<'EOF'
+@startuml
+title Kontextdiagramm – Thesis-Matching-Plattform
+left to right direction
+skinparam shadowing false
+
+actor "Studierende" as Student
+actor "Betreuende" as Supervisor
+actor "Admin" as Admin
+
+rectangle "Thesis-Matching-System\n(Spring Boot)" as System
+
+cloud "GitHub OAuth" as GitHub
+database "Datenbank\n(z.B. PostgreSQL)" as DB
+folder "Dateisystem\nUploads" as FS
+
+Student --> System : Suchen/Filtern/\nMatching nutzen
+Supervisor --> System : Profil/Themen pflegen\nDateien hochladen
+Admin --> System : Betreuer anlegen\nRollen verwalten
+
+System --> GitHub : OAuth2 Login
+System --> DB : Persistenz (DTO/JPA)
+System --> FS : Datei speichern/lesen
+@enduml
+EOF
