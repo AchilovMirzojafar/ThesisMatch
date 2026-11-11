@@ -8,7 +8,8 @@ spring:
             client-secret: ${CLIENT_SECRET}
             # kein scope: der Login braucht nur die öffentlichen Profildaten (Standard "read:user")
   datasource:
-    url: ${DB_URL:jdbc:postgresql://localhost:5432/postgres}
+    # Port 5433, damit es keinen Konflikt mit einem lokal installierten PostgreSQL (5432) gibt
+    url: ${DB_URL:jdbc:postgresql://localhost:5433/postgres}
     username: ${DB_USER:user}
     password: ${DB_PASSWORD:iamgroot}
 
