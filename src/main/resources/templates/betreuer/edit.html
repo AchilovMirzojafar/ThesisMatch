@@ -49,6 +49,12 @@
 
                         <form method="post" th:action="@{/profil}" th:object="${betreuer}">
 
+                            <div class="alert alert-warning" th:if="${#fields.hasGlobalErrors()}">
+                                <p class="mb-0" th:each="err : ${#fields.globalErrors()}" th:text="${err}"></p>
+                            </div>
+
+                            <input type="hidden" th:field="*{version}" />
+
                             <div class="row mb-2">
                                 <div class="col-md-4">
                                     <label for="titel" class="form-label mb-1">Titel</label>
@@ -102,11 +108,6 @@
                                     <input type="text" class="form-control form-control-sm" th:value="*{fachId}"
                                         disabled />
 
-                                    <input type="hidden" th:field="*{fachId}" />
-
-                                    <div class="text-danger small" th:if="${#fields.hasErrors('fachId')}"
-                                        th:errors="*{fachId}">
-                                    </div>
                                 </div>
 
                             </div>

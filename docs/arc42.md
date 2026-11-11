@@ -131,11 +131,19 @@ Die Anwendung folgt einer **Onion-Architektur**, um die Geschäftslogik von Infr
 Begründung:  
 Themen existieren nur im Kontext eines Betreuers und werden ausschließlich über ihn verändert.
 
+Umsetzung:
+
+- Änderungen nur über Methoden des Aggregate Roots (`addThema`, `removeThema`, `updateProfil`)
+- Getter liefern unveränderliche Kopien, Collections können von außen nicht verändert werden
+- Neue Objekte entstehen über Fabrikmethoden (`Betreuer.neu`, `Thema.neu`), die die fachlichen Regeln prüfen
+- Value Objects `GitHubId` und `Email` sind immer gültig
+- Andere Teile des Systems kennen einen Betreuer nur über seine `GitHubId`
+
 ---
 
 ### DTO-basierte Persistenz
 
-Domain-Objekte sind nicht direkt JPA-Entities.  
+Domain-Objekte sind nicht direkt Spring-Data-Entities.  
 Stattdessen werden DTOs verwendet (z. B. `BetreuerDTO`, `ThemaDTO`).  
 Die Klasse `BetreuerRepositoryImpl` übernimmt das Mapping.
 
@@ -146,8 +154,8 @@ Die Domäne bleibt frameworkfrei und gut testbar.
 
 ### Matching als Domain-Logik
 
-Matching wird über `Matching`, `MatchingService` und `MatchingResult` implementiert.  
-Die Logik liegt vollständig im Domain-/Application-Layer.
+Die Berechnung liegt im Domain Service `MatchingCalculator` (reines Java).  
+`MatchingService` im Application Layer lädt nur die Betreuer und delegiert die Berechnung.
 
 ---
 
@@ -178,11 +186,12 @@ Siehe Datei:
 
 ### Web Layer
 Verarbeitet HTTP-Anfragen.  
-Enthält keine Geschäftslogik.
+Enthält keine Geschäftslogik und greift nie direkt auf Repositories zu.  
+Formulare werden an eigene Form-Objekte gebunden (`web.form`), nicht an Domänenobjekte.  
+Zugriff wird über Annotationen wie `@AdminOnly` (`web.security`) geregelt.
 
-### Security Layer
-Konfiguriert OAuth2 und Rollen.  
-Zugriff wird über Annotationen wie `@AdminOnly` geregelt.
+### Security Layer (config)
+Konfiguriert OAuth2 und Rollen.
 
 ### Application Layer
 Orchestriert Anwendungsfälle wie:
@@ -191,12 +200,15 @@ Orchestriert Anwendungsfälle wie:
 - Thema hinzufügen
 - Matching durchführen
 
+Schreibende Methoden laufen in einer Transaktion (`@Transactional`).
+
 ### Domain Layer
 Enthält fachliche Logik:
 
 - Betreuer (Aggregate Root)
-- Thema
-- Matching
+- Thema (Entity im Aggregat)
+- GitHubId, Email (Value Objects)
+- MatchingCalculator (Domain Service)
 - TagCatalog
 - VeranstaltungCatalog
 
@@ -258,15 +270,20 @@ Die Anwendung läuft serverseitig und wird über HTTP aufgerufen.
 
 ## 8.2 Nebenläufigkeit
 
-- Schreibzugriffe erfolgen über Services
+- Schreibzugriffe erfolgen über Services in einer Transaktion
 - Konsistenz über Aggregate Root
-- Empfehlung: Optimistic Locking
-- Konflikte werden sichtbar gemacht
+- Optimistic Locking über die Spalte `version` (`@Version` in `BetreuerDTO`)
+- Die Version wird im Bearbeitungsformular mitgeschickt. Wurde das Profil zwischenzeitlich geändert,
+  bekommt der Nutzer einen Hinweis statt die Änderung eines anderen zu überschreiben
+- `fach_id` ist in der Datenbank eindeutig (`UNIQUE`), doppelte Betreuer sind auch bei gleichzeitigen Anfragen ausgeschlossen
 
 ---
 
 ## 8.3 Validierung
 
+- Formulare werden mit Bean Validation geprüft (Fehlermeldungen für den Nutzer)
+- Das Domänenmodell prüft dieselben Regeln noch einmal im Konstruktor bzw. in der Fabrikmethode,
+  sodass ungültige Objekte gar nicht entstehen können
 - Titel eines Themas darf nicht leer sein
 - Tags und Veranstaltungen über Kataloge validiert
 
@@ -310,9 +327,11 @@ Die Anwendung läuft serverseitig und wird über HTTP aufgerufen.
 
 | Risiko | Maßnahme |
 |--------|----------|
-| Lost Updates | Versionierung |
-| Schichtenverletzung | ArchUnit |
+| Lost Updates | Optimistic Locking (`version`) |
+| Schichtenverletzung | ArchUnit (Onion, frameworkfreie Domäne, keine Repositories im Web Layer) |
 | Zu große Aggregate | Regelmäßige DDD-Überprüfung |
+| Performance bei vielen Betreuern | Suche, Filter und Matching laden aktuell alle Betreuer (`findAll`) und filtern im Speicher. Für die erwartete Datenmenge unkritisch, bei Wachstum auf Datenbankabfragen umstellen |
+| Doppelte Tags im Katalog | „ML“/„Machine Learning“ und „Security“/„IT-Security“ sind getrennte Einträge. Zusammenführen erfordert eine Datenmigration |
 
 ---
 

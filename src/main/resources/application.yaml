@@ -4,14 +4,14 @@ spring:
       client:
         registration:
           github:
-            client-id:  ${CLIENT_ID}
+            client-id: ${CLIENT_ID}
             client-secret: ${CLIENT_SECRET}
-            scope:
-              - read:public_repo
+            # kein scope: der Login braucht nur die öffentlichen Profildaten (Standard "read:user")
   datasource:
-    password: iamgroot
-    username: user
-    url: jdbc:postgresql://localhost:5432/postgres
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/postgres}
+    username: ${DB_USER:user}
+    password: ${DB_PASSWORD:iamgroot}
 
+# GitHub-IDs der Administratoren, kommagetrennt. Kann über die Umgebungsvariable ADMINS überschrieben werden.
 security:
-  admins: 116162742,147902436,115821857
+  admins: ${ADMINS:116162742,147902436,115821857}

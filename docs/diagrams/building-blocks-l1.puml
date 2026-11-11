@@ -3,16 +3,20 @@ title Bausteinsicht Level 1 – Thesis-Matching-Plattform
 skinparam shadowing false
 top to bottom direction
 
-rectangle "Web Layer\n\nAdminController\nBetreuerController\nChatGptController" as Web
+rectangle "Config\n\nSecurityConfig\nAppUserService" as Config
 
-rectangle "Application Layer\n\nBetreuerReadService\nBetreuerWriteService\nThemaService\nMatchingService\nAppUserService" as App
+rectangle "Web Layer\n\nAdminController\nBetreuerController\nStudentController\nForm-Objekte\n@AdminOnly, @BetreuerOnly" as Web
 
-rectangle "Domain Layer\n\nBetreuer\nThema\nMatching\nMatchingResult\nTagCatalog\nVeranstaltungCatalog\nVeranstaltungenListe" as Domain
+rectangle "Application Layer\n\nBetreuerReadService\nBetreuerWriteService\nThemaService\nMatchingService\nBetreuerRepository (Interface)" as App
 
-rectangle "Persistence Adapter Layer\n\nBetreuerRepository (Interface)\nBetreuerRepositoryImpl\nBetreuerDaoRepository\nDTOs (BetreuerDTO, ThemaDTO, ...)" as Persistence
+rectangle "Domain Layer\n\nBetreuer (Aggregate Root)\nThema\nGitHubId, Email (Value Objects)\nMatchingResult\nMatchingCalculator (Domain Service)\nTagCatalog\nVeranstaltungCatalog" as Domain
+
+rectangle "Persistence Adapter Layer\n\nBetreuerRepositoryImpl\nBetreuerDaoRepository\nDTOs (BetreuerDTO, ThemaDTO, ...)" as Persistence
 
 Web --> App
+Config --> App
 App --> Domain
-Persistence --> Domain : implements interfaces
+Persistence --> App : implements BetreuerRepository
+Persistence --> Domain
 
 @enduml
